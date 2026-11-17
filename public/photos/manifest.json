@@ -1,1 +1,800 @@
-{}
+{
+ "cars-1": {
+  "file": "cars-1.jpg",
+  "title": "SUZUKI ALTO China(1).jpg",
+  "author": "Dinkun Chen",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:SUZUKI_ALTO_China(1).jpg"
+ },
+ "cars-2": {
+  "file": "cars-2.jpg",
+  "title": "Toyota Corolla Cross Hybrid 1X7A1861.jpg",
+  "author": "Alexander-93",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Toyota_Corolla_Cross_Hybrid_1X7A1861.jpg"
+ },
+ "cars-3": {
+  "file": "cars-3.jpg",
+  "title": "Honda Civic (1Y7A1724).jpg",
+  "author": "MB-one",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Honda_Civic_(1Y7A1724).jpg"
+ },
+ "cars-4": {
+  "file": "cars-4.jpg",
+  "title": "Mazda MX-5 (ND) 1X7A7471.jpg",
+  "author": "Alexander-93",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Mazda_MX-5_(ND)_1X7A7471.jpg"
+ },
+ "cars-5": {
+  "file": "cars-5.jpg",
+  "title": "Tesla Model 3 (2023) Autofrühling Ulm IMG 9282.jpg",
+  "author": "Alexander-93",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Tesla_Model_3_(2023)_Autofr%C3%BChling_Ulm_IMG_9282.jpg"
+ },
+ "cars-6": {
+  "file": "cars-6.jpg",
+  "title": "Alsager Carnival - fire service Toyota Hilux - Jun 2025.jpg",
+  "author": "Dominic Nelson",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Alsager_Carnival_-_fire_service_Toyota_Hilux_-_Jun_2025.jpg"
+ },
+ "cars-7": {
+  "file": "cars-7.jpg",
+  "title": "Land Rover Range Rover Autobiography 2016.jpg",
+  "author": "DeFacto",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Land_Rover_Range_Rover_Autobiography_2016.jpg"
+ },
+ "cars-8": {
+  "file": "cars-8.jpg",
+  "title": "Mercedes-Benz CL-Class (C 140) 1X7A7251.jpg",
+  "author": "Alexander-93",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Mercedes-Benz_CL-Class_(C_140)_1X7A7251.jpg"
+ },
+ "cars-9": {
+  "file": "cars-9.jpg",
+  "title": "Porsche 911 Carrera Turbo Nr. 1 in the Porsche-Museum (2009) IMG 7421.jpg",
+  "author": "Alexander-93",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Porsche_911_Carrera_Turbo_Nr._1_in_the_Porsche-Museum_(2009)_IMG_7421.jpg"
+ },
+ "cars-10": {
+  "file": "cars-10.jpg",
+  "title": "Lamborghini Huracan Performante, IAA 2017, Frankfurt (1Y7A2827).jpg",
+  "author": "Matti Blume",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Lamborghini_Huracan_Performante,_IAA_2017,_Frankfurt_(1Y7A2827).jpg"
+ },
+ "cars-11": {
+  "file": "cars-11.jpg",
+  "title": "Ferrari F8 Tributo DSC 7013.jpg",
+  "author": "Alexander Migl",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Ferrari_F8_Tributo_DSC_7013.jpg"
+ },
+ "cars-12": {
+  "file": "cars-12.jpg",
+  "title": "Dülmen, Rolls-Royce Phantom II -- 2024 -- 5841.jpg",
+  "author": "Dietmar Rabich",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:D%C3%BClmen,_Rolls-Royce_Phantom_II_--_2024_--_5841.jpg"
+ },
+ "cars-13": {
+  "file": "cars-13.jpg",
+  "title": "2014 McLaren P1 3.8.jpg",
+  "author": "Chelsea Jay",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:2014_McLaren_P1_3.8.jpg"
+ },
+ "cars-14": {
+  "file": "cars-14.jpg",
+  "title": "Bugatti Veyron 12.jpg",
+  "author": "Calreyn88",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Bugatti_Veyron_12.jpg"
+ },
+ "cars-15": {
+  "file": "cars-15.jpg",
+  "title": "Koenigsegg Jesko Auto Zuerich 2023 1X7A1382.jpg",
+  "author": "Alexander-93",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Koenigsegg_Jesko_Auto_Zuerich_2023_1X7A1382.jpg"
+ },
+ "cars-16": {
+  "file": "cars-16.jpg",
+  "title": "Bugatti Chiron, GIMS 2018, Le Grand-Saconnex (1X7A1765).jpg",
+  "author": "Matti Blume",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Bugatti_Chiron,_GIMS_2018,_Le_Grand-Saconnex_(1X7A1765).jpg"
+ },
+ "cars-17": {
+  "file": "cars-17.jpg",
+  "title": "Pagani Huayra BC Roadster, BAS 24, Brussels (P1170491-RR).jpg",
+  "author": "Matti Blume",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Pagani_Huayra_BC_Roadster,_BAS_24,_Brussels_(P1170491-RR).jpg"
+ },
+ "cars-18": {
+  "file": "cars-18.jpg",
+  "title": "1929 Rolls-Royce Phantom II Boattail, TCE 24, Essen (TCE43402-RR).jpg",
+  "author": "Matti Blume",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:1929_Rolls-Royce_Phantom_II_Boattail,_TCE_24,_Essen_(TCE43402-RR).jpg"
+ },
+ "cars-19": {
+  "file": "cars-19.jpg",
+  "title": "Ferrari 250 GTO, CMC-Modell (Seite 2017-02-15).JPG",
+  "author": "Lothar Spurzem",
+  "license": "CC BY-SA 2.0 de",
+  "page": "https://commons.wikimedia.org/wiki/File:Ferrari_250_GTO,_CMC-Modell_(Seite_2017-02-15).JPG"
+ },
+ "cars-20": {
+  "file": "cars-20.jpg",
+  "title": "1955 Mercedes-Benz 300 SLR Uhlenhaut Coupe , Mercedes Museum , Stuttgart , Germany Ank Kumar , Infosys Limited 06.jpg",
+  "author": "Ank Kumar",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:1955_Mercedes-Benz_300_SLR_Uhlenhaut_Coupe_,_Mercedes_Museum_,_Stuttgart_,_Germany_Ank_Kumar_,_Infosys_Limited_06.jpg"
+ },
+ "yachts-1": {
+  "file": "yachts-1.jpg",
+  "title": "BostonWhaler130SS2009 1.jpg",
+  "author": "Rborroto",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:BostonWhaler130SS2009_1.jpg"
+ },
+ "yachts-2": {
+  "file": "yachts-2.jpg",
+  "title": "Sea Ray 500 Sundancer - Quebec.jpg",
+  "author": "Jeangagnon",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Sea_Ray_500_Sundancer_-_Quebec.jpg"
+ },
+ "yachts-3": {
+  "file": "yachts-3.jpg",
+  "title": "Azimut Hotel in Astrakhan lobby.jpg",
+  "author": "Dor Shabashewitz",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Azimut_Hotel_in_Astrakhan_lobby.jpg"
+ },
+ "yachts-6": {
+  "file": "yachts-6.jpg",
+  "title": "2025 Flying Fox - IMO 9829394 - by 2eight - 9SC7476.jpg",
+  "author": "Stefan Brending (2eight)",
+  "license": "CC BY-SA 3.0 de",
+  "page": "https://commons.wikimedia.org/wiki/File:2025_Flying_Fox_-_IMO_9829394_-_by_2eight_-_9SC7476.jpg"
+ },
+ "yachts-7": {
+  "file": "yachts-7.jpg",
+  "title": "Yacht Azzam - UAE.jpg",
+  "author": "Farid mernissi",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Yacht_Azzam_-_UAE.jpg"
+ },
+ "yachts-8": {
+  "file": "yachts-8.jpg",
+  "title": "Yacht Eclipse Hamburg Harbour Blohm Voss 20090801.JPG",
+  "author": "Ben Sinclaire",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Yacht_Eclipse_Hamburg_Harbour_Blohm_Voss_20090801.JPG"
+ },
+ "jets-1": {
+  "file": "jets-1.jpg",
+  "title": "Cirrus SR22 N241SL on Approach for VGT.jpg",
+  "author": "Noah Wulf",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Cirrus_SR22_N241SL_on_Approach_for_VGT.jpg"
+ },
+ "jets-2": {
+  "file": "jets-2.jpg",
+  "title": "N22UB Cessna Citation CJ4 (24468199463).jpg",
+  "author": "James from Cheltenham, Gloucestershire",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:N22UB_Cessna_Citation_CJ4_(24468199463).jpg"
+ },
+ "jets-3": {
+  "file": "jets-3.jpg",
+  "title": "EC-MLR Gulfstream G650 SCQ 03.jpg",
+  "author": "Bene Riobó",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:EC-MLR_Gulfstream_G650_SCQ_03.jpg"
+ },
+ "jets-4": {
+  "file": "jets-4.jpg",
+  "title": "Boeing 747-8 Intercontinental - N6067E (7987027290).jpg",
+  "author": "InSapphoWeTrust from Los Angeles, California, USA",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Boeing_747-8_Intercontinental_-_N6067E_(7987027290).jpg"
+ },
+ "jets-5": {
+  "file": "jets-5.jpg",
+  "title": "Emirates Airbus A380-861 A6-EER MUC 2015 01.jpg",
+  "author": "Julian Herzog (Website)",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Emirates_Airbus_A380-861_A6-EER_MUC_2015_01.jpg"
+ },
+ "watches-1": {
+  "file": "watches-1.jpg",
+  "title": "Casio F-91W watch (2023) (left-hand side and strap).jpg",
+  "author": "Multicherry",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Casio_F-91W_watch_(2023)_(left-hand_side_and_strap).jpg"
+ },
+ "watches-2": {
+  "file": "watches-2.jpg",
+  "title": "Seiko 5 SNKA23 watch - 2.JPG",
+  "author": "Ash Crow",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Seiko_5_SNKA23_watch_-_2.JPG"
+ },
+ "watches-4": {
+  "file": "watches-4.jpg",
+  "title": "OMEGA-Speedmaster-Professional-Front.jpg",
+  "author": "Torsten Bolten",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:OMEGA-Speedmaster-Professional-Front.jpg"
+ },
+ "watches-5": {
+  "file": "watches-5.jpg",
+  "title": "Rolex Submariner Professional.JPG",
+  "author": "Dr.K.",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Rolex_Submariner_Professional.JPG"
+ },
+ "watches-6": {
+  "file": "watches-6.jpg",
+  "title": "Royal Oak Offshore watch by Audemars Piguet.JPG",
+  "author": "Unknown",
+  "license": "CC BY 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Royal_Oak_Offshore_watch_by_Audemars_Piguet.JPG"
+ },
+ "watches-7": {
+  "file": "watches-7.jpg",
+  "title": "Patek Philippe Nautilus, qui in versione femminile in oro e acciaio e con movimento al quarzo, risalente ai primi anni Novanta.jpg",
+  "author": "Clyde94",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Patek_Philippe_Nautilus,_qui_in_versione_femminile_in_oro_e_acciaio_e_con_movimento_al_quarzo,_risalente_ai_primi_anni_Novanta.jpg"
+ },
+ "watches-8": {
+  "file": "watches-8.jpg",
+  "title": "HK YTM 九龍西 Kowloon West 圓方 Elements shopping mall shop watch and jewellery March 2023 Px3 05 Richard Mille.jpg",
+  "author": "Choihpmyouk 688",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:HK_YTM_%E4%B9%9D%E9%BE%8D%E8%A5%BF_Kowloon_West_%E5%9C%93%E6%96%B9_Elements_shopping_mall_shop_watch_and_jewellery_March_2023_Px3_05_Richard_Mille.jpg"
+ },
+ "watches-10": {
+  "file": "watches-10.jpg",
+  "title": "Breguet Marie-Antoinette watch in Jerusalem.jpg",
+  "author": "Atzatz",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Breguet_Marie-Antoinette_watch_in_Jerusalem.jpg"
+ },
+ "watches-11": {
+  "file": "watches-11.jpg",
+  "title": "Patek Philippe Grandmaster Chime ref. 5175R realizzato nel 2014 in soli 7 esemplari per i 175 anni di fondazione della Maison.jpg",
+  "author": "EMore98",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Patek_Philippe_Grandmaster_Chime_ref._5175R_realizzato_nel_2014_in_soli_7_esemplari_per_i_175_anni_di_fondazione_della_Maison.jpg"
+ },
+ "mobiles-1": {
+  "file": "mobiles-1.jpg",
+  "title": "Nokia 3310 grey all sides.jpg",
+  "author": "Multicherry",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Nokia_3310_grey_all_sides.jpg"
+ },
+ "mobiles-2": {
+  "file": "mobiles-2.png",
+  "title": "Samsung Galaxy A40 und Samsung Galaxy A15 20240529 HOF7492 RAW-Export cens.png",
+  "author": "PantheraLeo1359531",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Samsung_Galaxy_A40_und_Samsung_Galaxy_A15_20240529_HOF7492_RAW-Export_cens.png"
+ },
+ "mobiles-3": {
+  "file": "mobiles-3.jpg",
+  "title": "Motorola RAZR V3-92065.jpg",
+  "author": "Raimond Spekking",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Motorola_RAZR_V3-92065.jpg"
+ },
+ "mobiles-4": {
+  "file": "mobiles-4.jpg",
+  "title": "IPhone 16 packaging (2025-12-01).jpg",
+  "author": "Olgierd Rudak",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:IPhone_16_packaging_(2025-12-01).jpg"
+ },
+ "mobiles-5": {
+  "file": "mobiles-5.jpg",
+  "title": "Apple MacBook Pro 16\" M2 Max and iPhone 13 Pro.jpg",
+  "author": "SimonWaldherr",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Apple_MacBook_Pro_16%22_M2_Max_and_iPhone_13_Pro.jpg"
+ },
+ "mobiles-6": {
+  "file": "mobiles-6.jpg",
+  "title": "SAMSUNG Galaxy Z Fold 4 & SAMSUNG Galaxy Z Flip 4, SAMSUNG W23 & W23 FLIP (FROM SAMSUNG Galaxy Z Fold 4 & SAMSUNG Galaxy Z Flip 4).jpg",
+  "author": "Dinkun Chen",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:SAMSUNG_Galaxy_Z_Fold_4_%26_SAMSUNG_Galaxy_Z_Flip_4,_SAMSUNG_W23_%26_W23_FLIP_(FROM_SAMSUNG_Galaxy_Z_Fold_4_%26_SAMSUNG_Galaxy_Z_Flip_4).jpg"
+ },
+ "art-1": {
+  "file": "art-1.jpg",
+  "title": "Katsushika Hokusai - The Great Wave off the Coast of Kanagawa LCCN2008660568.jpg",
+  "author": "Katsushika, Hokusai, 1760-1849, artist",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Katsushika_Hokusai_-_The_Great_Wave_off_the_Coast_of_Kanagawa_LCCN2008660568.jpg"
+ },
+ "art-2": {
+  "file": "art-2.jpg",
+  "title": "Vincent van Gogh - Irises (1889).jpg",
+  "author": "Vincent van Gogh",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_Irises_(1889).jpg"
+ },
+ "art-3": {
+  "file": "art-3.jpg",
+  "title": "The Man with the Pipe (Portrait of Dr. Gachet) - Vincent Van Gogh.jpg",
+  "author": "GoldenArtists",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:The_Man_with_the_Pipe_(Portrait_of_Dr._Gachet)_-_Vincent_Van_Gogh.jpg"
+ },
+ "art-4": {
+  "file": "art-4.jpg",
+  "title": "Water Lilies, Reflections of Weeping Willows (1916) Claude Monet - NMWA, Tokyo (W 1971).jpg",
+  "author": "Claude Monet",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Water_Lilies,_Reflections_of_Weeping_Willows_(1916)_Claude_Monet_-_NMWA,_Tokyo_(W_1971).jpg"
+ },
+ "art-5": {
+  "file": "art-5.jpg",
+  "title": "Gustav Klimt - Study for Portrait of Adele Bloch-Bauer I - Google Art Project.jpg",
+  "author": "Gustav Klimt",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Gustav_Klimt_-_Study_for_Portrait_of_Adele_Bloch-Bauer_I_-_Google_Art_Project.jpg"
+ },
+ "art-6": {
+  "file": "art-6.jpg",
+  "title": "Cezanne The Card Players Metmuseum.jpg",
+  "author": "Paul Cézanne",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Cezanne_The_Card_Players_Metmuseum.jpg"
+ },
+ "art-7": {
+  "file": "art-7.jpg",
+  "title": "Paul Gauguin, Nafea Faa Ipoipo? 1892, oil on canvas, 101 x 77 cm.jpg",
+  "author": "Paul Gauguin",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Paul_Gauguin,_Nafea_Faa_Ipoipo%3F_1892,_oil_on_canvas,_101_x_77_cm.jpg"
+ },
+ "art-8": {
+  "file": "art-8.jpg",
+  "title": "Leonardo da Vinci, Salvator Mundi, c.1500, oil on walnut, 45.4 × 65.6 cm.jpg",
+  "author": "Leonardo da Vinci",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Leonardo_da_Vinci,_Salvator_Mundi,_c.1500,_oil_on_walnut,_45.4_%C3%97_65.6_cm.jpg"
+ },
+ "art-9": {
+  "file": "art-9.jpg",
+  "title": "A painted plate with an image of the \"Mona Lisa\" in the Munich Residenz, Germany.jpg",
+  "author": "Wilfredor",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:A_painted_plate_with_an_image_of_the_%22Mona_Lisa%22_in_the_Munich_Residenz,_Germany.jpg"
+ },
+ "art-10": {
+  "file": "art-10.jpg",
+  "title": "Vincent van Gogh - Starry Night - Google Art Project.jpg",
+  "author": "Vincent van Gogh",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
+ },
+ "africa-1": {
+  "file": "africa-1.jpg",
+  "title": "DSCF0822 A small pink roadside kiosk shaded by trees serving drinks and snacks on a quiet sunny day.jpg",
+  "author": "PattayaPatrol",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:DSCF0822_A_small_pink_roadside_kiosk_shaded_by_trees_serving_drinks_and_snacks_on_a_quiet_sunny_day.jpg"
+ },
+ "africa-2": {
+  "file": "africa-2.jpg",
+  "title": "Tin roofed shack, Cilgwyn - geograph.org.uk - 5558358.jpg",
+  "author": "Gordon Hatton",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Tin_roofed_shack,_Cilgwyn_-_geograph.org.uk_-_5558358.jpg"
+ },
+ "africa-3": {
+  "file": "africa-3.jpg",
+  "title": "Plot' - L'entrée du village.jpg",
+  "author": "Kozakchok",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Plot%27_-_L%27entr%C3%A9e_du_village.jpg"
+ },
+ "africa-4": {
+  "file": "africa-4.jpg",
+  "title": "M-PESA mobile money and Equity agent, Nairobi, Kenya.jpg",
+  "author": "Fiona Graham",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:M-PESA_mobile_money_and_Equity_agent,_Nairobi,_Kenya.jpg"
+ },
+ "africa-5": {
+  "file": "africa-5.jpg",
+  "title": "Afghanese riverside mud brick homes.jpg",
+  "author": "R9 Studios FL (Thanks to all the fans!!!)",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Afghanese_riverside_mud_brick_homes.jpg"
+ },
+ "africa-6": {
+  "file": "africa-6.jpg",
+  "title": "DSCF0980 A bustling outdoor market stall where a young vendor bags fresh produce while shoppers browse colorful herbs spices and vegetables under green canopies.jpg",
+  "author": "PattayaPatrol",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:DSCF0980_A_bustling_outdoor_market_stall_where_a_young_vendor_bags_fresh_produce_while_shoppers_browse_colorful_herbs_spices_and_vegetables_under_green_canopies.jpg"
+ },
+ "africa-9": {
+  "file": "africa-9.jpg",
+  "title": "View of apartment blocks at Town Quay Wharf reflected in the Roding - geograph.org.uk - 5381287.jpg",
+  "author": "Robert Lamb",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:View_of_apartment_blocks_at_Town_Quay_Wharf_reflected_in_the_Roding_-_geograph.org.uk_-_5381287.jpg"
+ },
+ "africa-11": {
+  "file": "africa-11.jpg",
+  "title": "Solomon's Lodge, Savannah.jpg",
+  "author": "LittleT889",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Solomon%27s_Lodge,_Savannah.jpg"
+ },
+ "africa-12": {
+  "file": "africa-12.jpg",
+  "title": "Oriental Textile Mill Houston Heights (HDR).jpg",
+  "author": "Ed Uthman, Houston, Texas, USA",
+  "license": "CC BY 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Oriental_Textile_Mill_Houston_Heights_(HDR).jpg"
+ },
+ "africa-13": {
+  "file": "africa-13.jpg",
+  "title": "Diamonds Thudufushi Beach and Water Villas, May 2017 -09.jpg",
+  "author": "Martin Falbisoner",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Diamonds_Thudufushi_Beach_and_Water_Villas,_May_2017_-09.jpg"
+ },
+ "africa-15": {
+  "file": "africa-15.jpg",
+  "title": "Fukuoka Daimyō Garden City Tower the office lobby on the 3rd floor Chūō-ku Fukuoka 20250619.jpg",
+  "author": "Hirho",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Fukuoka_Daimy%C5%8D_Garden_City_Tower_the_office_lobby_on_the_3rd_floor_Ch%C5%AB%C5%8D-ku_Fukuoka_20250619.jpg"
+ },
+ "africa-16": {
+  "file": "africa-16.jpg",
+  "title": "Oil & Chemical Tanker Oriental Gold at BP Oil Refinery Jetty, Kwinana, February 2024 03.jpg",
+  "author": "Calistemon",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Oil_%26_Chemical_Tanker_Oriental_Gold_at_BP_Oil_Refinery_Jetty,_Kwinana,_February_2024_03.jpg"
+ },
+ "africa-18": {
+  "file": "africa-18.jpg",
+  "title": "New grid connection for Hatherden solar farm - geograph.org.uk - 8073238.jpg",
+  "author": "David Martin",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:New_grid_connection_for_Hatherden_solar_farm_-_geograph.org.uk_-_8073238.jpg"
+ },
+ "africa-19": {
+  "file": "africa-19.jpg",
+  "title": "Reception lounge at Amantaka luxury Resort & Hotel at blue hour in Luang Prabang Laos.jpg",
+  "author": "Basile Morin",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Reception_lounge_at_Amantaka_luxury_Resort_%26_Hotel_at_blue_hour_in_Luang_Prabang_Laos.jpg"
+ },
+ "africa-20": {
+  "file": "africa-20.jpg",
+  "title": "Diamond mine MIR in winter. Yakutia 2018 (Алмазная шахта МИР зимой. Якутия 2018).jpg",
+  "author": "Chursaev13",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Diamond_mine_MIR_in_winter._Yakutia_2018_(%D0%90%D0%BB%D0%BC%D0%B0%D0%B7%D0%BD%D0%B0%D1%8F_%D1%88%D0%B0%D1%85%D1%82%D0%B0_%D0%9C%D0%98%D0%A0_%D0%B7%D0%B8%D0%BC%D0%BE%D0%B9._%D0%AF%D0%BA%D1%83%D1%82%D0%B8%D1%8F_2018).jpg"
+ },
+ "south_america-3": {
+  "file": "south_america-3.jpg",
+  "title": "1820 Cottage, Spire House and Hillside Cottage, Bakewell.jpg",
+  "author": "Peter Barr",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:1820_Cottage,_Spire_House_and_Hillside_Cottage,_Bakewell.jpg"
+ },
+ "south_america-4": {
+  "file": "south_america-4.jpg",
+  "title": "Bucket List Coffee Roastery, Amherstburg, Ontario, 2025-06-03.jpg",
+  "author": "Crisco 1492",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Bucket_List_Coffee_Roastery,_Amherstburg,_Ontario,_2025-06-03.jpg"
+ },
+ "south_america-6": {
+  "file": "south_america-6.jpg",
+  "title": "El Paradon Surf Hostel.jpg",
+  "author": "Eli Duke",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:El_Paradon_Surf_Hostel.jpg"
+ },
+ "south_america-9": {
+  "file": "south_america-9.jpg",
+  "title": "Drift Beachfront Condo maximums, Palm Cove, Queensland, 2020, 03.jpg",
+  "author": "Kgbo",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Drift_Beachfront_Condo_maximums,_Palm_Cove,_Queensland,_2020,_03.jpg"
+ },
+ "south_america-11": {
+  "file": "south_america-11.jpg",
+  "title": "Coffee tree in Hacienda Guayabal, Colombia.jpg",
+  "author": "Bernard Gagnon",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Coffee_tree_in_Hacienda_Guayabal,_Colombia.jpg"
+ },
+ "south_america-15": {
+  "file": "south_america-15.jpg",
+  "title": "Peter Romero, Naudia Rio at Penthouse Talent Call 2.jpg",
+  "author": "Photo from www.lukeisback.com",
+  "license": "CC BY-SA 2.5",
+  "page": "https://commons.wikimedia.org/wiki/File:Peter_Romero,_Naudia_Rio_at_Penthouse_Talent_Call_2.jpg"
+ },
+ "south_america-17": {
+  "file": "south_america-17.jpg",
+  "title": "4 day trip to La Selva Lodge on the Napo River in the Amazon jungle of E. Ecuador - first look at the luxurious Eco Lodge - (26261078543).jpg",
+  "author": "Murray Foubister",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:4_day_trip_to_La_Selva_Lodge_on_the_Napo_River_in_the_Amazon_jungle_of_E._Ecuador_-_first_look_at_the_luxurious_Eco_Lodge_-_(26261078543).jpg"
+ },
+ "south_america-19": {
+  "file": "south_america-19.jpg",
+  "title": "Risers going below a offshore oil platform.jpg",
+  "author": "FrogsLegs71",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Risers_going_below_a_offshore_oil_platform.jpg"
+ },
+ "asia-1": {
+  "file": "asia-1.jpg",
+  "title": "Noodle Restaurant and Vegetables Stall in Xindong Street 20100120.jpg",
+  "author": "玄史生",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:Noodle_Restaurant_and_Vegetables_Stall_in_Xindong_Street_20100120.jpg"
+ },
+ "asia-3": {
+  "file": "asia-3.jpg",
+  "title": "Farmhouse and rice paddy.jpg",
+  "author": "Marie-Sophie Mejan",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Farmhouse_and_rice_paddy.jpg"
+ },
+ "asia-9": {
+  "file": "asia-9.jpg",
+  "title": "Townhouses-352-353-riverside.jpg",
+  "author": "Americasroof",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Townhouses-352-353-riverside.jpg"
+ },
+ "asia-10": {
+  "file": "asia-10.jpg",
+  "title": "Commerce Advisor Sheikh Bashiruddin Briefing Journalists At Posta Leather Warehouse 2025-06-08 (PID-0001468).jpg",
+  "author": "Press Information Department",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Commerce_Advisor_Sheikh_Bashiruddin_Briefing_Journalists_At_Posta_Leather_Warehouse_2025-06-08_(PID-0001468).jpg"
+ },
+ "asia-11": {
+  "file": "asia-11.jpg",
+  "title": "Sri Lanka, Tea plantations near Nuwara Eliya, Tea estate.jpg",
+  "author": "Vyacheslav Argenberg",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Sri_Lanka,_Tea_plantations_near_Nuwara_Eliya,_Tea_estate.jpg"
+ },
+ "asia-16": {
+  "file": "asia-16.jpg",
+  "title": "Building of Taiwan Semiconductor Manufacturing Fab 12B at night.jpg",
+  "author": "曾 成訓",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Building_of_Taiwan_Semiconductor_Manufacturing_Fab_12B_at_night.jpg"
+ },
+ "asia-17": {
+  "file": "asia-17.jpg",
+  "title": "Private pool villa at Six Senses Krabey Island, Cambodia.jpg",
+  "author": "Fabiovieiramd",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Private_pool_villa_at_Six_Senses_Krabey_Island,_Cambodia.jpg"
+ },
+ "asia-18": {
+  "file": "asia-18.jpg",
+  "title": "Financial District, Toronto, Ontario from CN Tower (21849823261).jpg",
+  "author": "Ken Lund from Reno, Nevada, USA",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Financial_District,_Toronto,_Ontario_from_CN_Tower_(21849823261).jpg"
+ },
+ "europe-1": {
+  "file": "europe-1.jpg",
+  "title": "Shorewood August 2026 015 (Corner Bakery Cafe).jpg",
+  "author": "Michael Barera",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Shorewood_August_2026_015_(Corner_Bakery_Cafe).jpg"
+ },
+ "europe-2": {
+  "file": "europe-2.jpg",
+  "title": "Hammond's Studio - Pine Flat Hotel.jpg",
+  "author": "Hammond's Studio",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Hammond%27s_Studio_-_Pine_Flat_Hotel.jpg"
+ },
+ "europe-3": {
+  "file": "europe-3.jpg",
+  "title": "Mid Devon , Countryside ^ Cottage - geograph.org.uk - 3910122.jpg",
+  "author": "Lewis Clarke",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Mid_Devon_,_Countryside_%5E_Cottage_-_geograph.org.uk_-_3910122.jpg"
+ },
+ "europe-4": {
+  "file": "europe-4.jpg",
+  "title": "Siren Craft Brewery - geograph.org.uk - 6591403.jpg",
+  "author": "Des Blenkinsopp",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Siren_Craft_Brewery_-_geograph.org.uk_-_6591403.jpg"
+ },
+ "europe-5": {
+  "file": "europe-5.jpg",
+  "title": "Water reflection of canal houses at blue hour in Damrak Amsterdam the Netherlands.jpg",
+  "author": "Basile Morin",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Water_reflection_of_canal_houses_at_blue_hour_in_Damrak_Amsterdam_the_Netherlands.jpg"
+ },
+ "europe-9": {
+  "file": "europe-9.jpg",
+  "title": "Miami Beach - The Riviera Plaza Hotel Apartment 02.jpg",
+  "author": "E. C. Kropp Co.",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Miami_Beach_-_The_Riviera_Plaza_Hotel_Apartment_02.jpg"
+ },
+ "europe-11": {
+  "file": "europe-11.jpg",
+  "title": "Napa Vineyard at Chateau Montelena.jpg",
+  "author": "Naotake Murayama",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Napa_Vineyard_at_Chateau_Montelena.jpg"
+ },
+ "europe-12": {
+  "file": "europe-12.jpg",
+  "title": "Old nuclear power plant & new wind turbine.jpg",
+  "author": "Jeanne Menjoulet",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Old_nuclear_power_plant_%26_new_wind_turbine.jpg"
+ },
+ "europe-17": {
+  "file": "europe-17.jpg",
+  "title": "Chirk Castle Estate - geograph.org.uk - 4190756.jpg",
+  "author": "Jeff Buck",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Chirk_Castle_Estate_-_geograph.org.uk_-_4190756.jpg"
+ },
+ "north_america-1": {
+  "file": "north_america-1.jpg",
+  "title": "Austin Texas food truck 3.jpg",
+  "author": "Kurtkaiser",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:Austin_Texas_food_truck_3.jpg"
+ },
+ "north_america-2": {
+  "file": "north_america-2.jpg",
+  "title": "Home Brewery Starter Kit.jpg",
+  "author": "Visitor7",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Home_Brewery_Starter_Kit.jpg"
+ },
+ "north_america-3": {
+  "file": "north_america-3.jpg",
+  "title": "Lakeside Cabin 5144.jpg",
+  "author": "Chris Light",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Lakeside_Cabin_5144.jpg"
+ },
+ "north_america-4": {
+  "file": "north_america-4.jpg",
+  "title": "Costa Coffee Goldex franchise at 133 High Street in the early hours of the morning, Gillingham, Kent, England, 16 October 2025.jpg",
+  "author": "OathOn",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Costa_Coffee_Goldex_franchise_at_133_High_Street_in_the_early_hours_of_the_morning,_Gillingham,_Kent,_England,_16_October_2025.jpg"
+ },
+ "north_america-7": {
+  "file": "north_america-7.jpg",
+  "title": "Ranch House Cafe, Vaughn NM.jpg",
+  "author": "John Phelan",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Ranch_House_Cafe,_Vaughn_NM.jpg"
+ },
+ "north_america-8": {
+  "file": "north_america-8.jpg",
+  "title": "Manufacturing steel ingots for the government. Layout of inspection floor in foundry-2; breaking and cutting apparatus in background. Sullers Steel Co., St. Louis, Mo - DPLA - 2031122d68718da399144133270aab28.jpg",
+  "author": "Department of Defense. Department of the Army. Office of the Deputy Chief of Staff for Operations. U.S. Army Audiovisual Center. ca. 1974-5/15/1984",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Manufacturing_steel_ingots_for_the_government._Layout_of_inspection_floor_in_foundry-2;_breaking_and_cutting_apparatus_in_background._Sullers_Steel_Co.,_St._Louis,_Mo_-_DPLA_-_2031122d68718da399144133270aab28.jpg"
+ },
+ "north_america-9": {
+  "file": "north_america-9.jpg",
+  "title": "Versace Mansion (Miami Beach).jpg",
+  "author": "Visitor7",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Versace_Mansion_(Miami_Beach).jpg"
+ },
+ "north_america-10": {
+  "file": "north_america-10.jpg",
+  "title": "Chris Rizik, CEO and Fund Manager, Renaissance Venture Capital Fund (7297392282).jpg",
+  "author": "Detroit Regional Chamber from Detroit, MI, United States",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Chris_Rizik,_CEO_and_Fund_Manager,_Renaissance_Venture_Capital_Fund_(7297392282).jpg"
+ },
+ "north_america-11": {
+  "file": "north_america-11.jpg",
+  "title": "Mountain lodge Tomčeva koča, Karawanks, Slovenia.jpg",
+  "author": "Michal Klajban",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Mountain_lodge_Tom%C4%8Deva_ko%C4%8Da,_Karawanks,_Slovenia.jpg"
+ },
+ "north_america-13": {
+  "file": "north_america-13.jpg",
+  "title": "Manhattan Loft Gardens 20180925 131035 (49398839587).jpg",
+  "author": "Irid Escent",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Manhattan_Loft_Gardens_20180925_131035_(49398839587).jpg"
+ },
+ "north_america-17": {
+  "file": "north_america-17.jpg",
+  "title": "Penthouse on a skyscraper LCCN2014681384.jpg",
+  "author": "Bain News Service, publisher",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Penthouse_on_a_skyscraper_LCCN2014681384.jpg"
+ },
+ "oceania-1": {
+  "file": "oceania-1.jpg",
+  "title": "Tobay Beach Surf Shack Restaurant.jpg",
+  "author": "DanTD",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Tobay_Beach_Surf_Shack_Restaurant.jpg"
+ },
+ "oceania-2": {
+  "file": "oceania-2.jpg",
+  "title": "The Bush from the Desert Cabin ... (6452884799).jpg",
+  "author": "Bernard DUPONT from FRANCE",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:The_Bush_from_the_Desert_Cabin_..._(6452884799).jpg"
+ },
+ "oceania-3": {
+  "file": "oceania-3.jpg",
+  "title": "Flats by Porthmadog Harbour, Gwynedd - geograph.org.uk - 1840657.jpg",
+  "author": "Peter Trimming",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Flats_by_Porthmadog_Harbour,_Gwynedd_-_geograph.org.uk_-_1840657.jpg"
+ },
+ "oceania-5": {
+  "file": "oceania-5.jpg",
+  "title": "Spirit of the Outback Platform 10 Roma Street Station Brisbane P1110386.jpg",
+  "author": "John Robert McPherson",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Spirit_of_the_Outback_Platform_10_Roma_Street_Station_Brisbane_P1110386.jpg"
+ },
+ "oceania-7": {
+  "file": "oceania-7.jpg",
+  "title": "Coastal Road to the Bungalow - geograph.org.uk - 5976080.jpg",
+  "author": "Andrew Wood",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Coastal_Road_to_the_Bungalow_-_geograph.org.uk_-_5976080.jpg"
+ },
+ "oceania-13": {
+  "file": "oceania-13.jpg",
+  "title": "Hester Creek Estate Vineyard 3.jpg",
+  "author": "Hester Creek Estate Winery",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Hester_Creek_Estate_Vineyard_3.jpg"
+ },
+ "oceania-15": {
+  "file": "oceania-15.jpg",
+  "title": "AJ Resort Island Ikeijima.JPG",
+  "author": "Kugel~commonswiki",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:AJ_Resort_Island_Ikeijima.JPG"
+ }
+}
