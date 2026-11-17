@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Full-screen splash used by the Capacitor SplashScreen plugin: pure black, logo + tagline centred
+     (never stretched, whatever the phone's aspect ratio). Artwork: drawable-*/splash_logo.png -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#000000" />
+        </shape>
+    </item>
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/splash_logo" />
+    </item>
+</layer-list>

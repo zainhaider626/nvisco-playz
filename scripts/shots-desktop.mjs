@@ -1,0 +1,14 @@
+import puppeteer from 'puppeteer-core';
+import { q, pool } from '../server/db.js';
+const u = (await q(`SELECT email FROM users WHERE email LIKE 'shot%@test.dev' ORDER BY created_at DESC LIMIT 1`)).rows[0].email;
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox', '--disable-gpu'] });
+const p = await b.newPage(); await p.setViewport({ width: 1280, height: 860, deviceScaleFactor: 1 });
+const errs = []; p.on('pageerror', e => errs.push(e.message));
+await p.goto('http://localhost:3000/', { waitUntil: 'networkidle2' });
+await p.click('[data-m=in]'); await p.type('input[name=email]', u); await p.type('input[name=password]', 'secret123'); await p.click('#authBtn');
+await p.waitForSelector('.pcard'); await new Promise(r => setTimeout(r, 900));
+await p.screenshot({ path: '/tmp/shots/d1-auth-world.png' });
+await p.evaluate(() => { location.hash = '#/ranks/world'; }); await new Promise(r => setTimeout(r, 900));
+await p.screenshot({ path: '/tmp/shots/d2-ranks.png' });
+await p.goto('http://localhost:3000/admin.html', { waitUntil: 'networkidle2' }); await new Promise(r => setTimeout(r, 600));
+console.log('errors', errs); await b.close(); await pool.end();

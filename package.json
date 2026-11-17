@@ -1,0 +1,40 @@
+{
+  "name": "nvisco-playz",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Nvisco Playz: tap, invest, trade and rank your company worldwide.",
+  "type": "module",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "build:assets": "node scripts/build-assets.mjs",
+    "simulate": "node scripts/simulate.mjs",
+    "test": "node scripts/test.mjs",
+    "photos": "node scripts/fetch-images.mjs",
+    "build": "node scripts/fetch-images.mjs || true"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^18.0.10",
+    "express": "^4.22.3",
+    "express-rate-limit": "^8.7.4",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "d3-geo": "^3.1.2",
+    "flag-icons": "^7.6.0",
+    "lucide-static": "^1.73.0",
+    "puppeteer-core": "^25.17.0",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2",
+    "world-countries": "^5.1.0"
+  }
+}

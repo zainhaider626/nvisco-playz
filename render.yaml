@@ -1,0 +1,26 @@
+# One-click hosting on Render (render.com): New > Blueprint > pick this repo.
+# After the first deploy, set ADMIN_USERNAME and ADMIN_PASSWORD in the service's Environment tab (only you know them).
+services:
+  - type: web
+    name: nvisco-playz
+    runtime: node
+    plan: starter            # "free" also works for testing, but it sleeps when idle and its database expires
+    buildCommand: npm ci --omit=dev && (node scripts/fetch-images.mjs || true)
+    startCommand: node server/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - { key: NODE_VERSION, value: "22" }
+      - { key: NODE_ENV, value: production }
+      - { key: TRUST_PROXY, value: "true" }
+      - { key: COOKIE_SECURE, value: "true" }
+      - { key: APP_NAME, value: Nvisco Playz }
+      - { key: REWARD_TZ, value: Asia/Karachi }
+      - { key: SEED_DEMO_BOTS, value: "40" }
+      - { key: JWT_SECRET, generateValue: true }
+      - { key: ADMIN_USERNAME, sync: false }
+      - { key: ADMIN_PASSWORD, sync: false }
+      - key: DATABASE_URL
+        fromDatabase: { name: nvisco-db, property: connectionString }
+databases:
+  - name: nvisco-db
+    plan: basic-256mb

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Nvisco Playz</string>
+    <string name="title_activity_main">Nvisco Playz</string>
+    <string name="package_name">com.nvisco.playz</string>
+    <string name="custom_url_scheme">com.nvisco.playz</string>
+</resources>

@@ -1,0 +1,92 @@
+import groovy.json.JsonSlurper
+
+apply plugin: 'com.android.application'
+
+// ---- Settings that CI (or you) can pass in -------------------------------------------------
+// Version:  ./gradlew assembleRelease -PAPP_VERSION_CODE=12 -PAPP_VERSION_NAME=1.0.12
+//           (or env vars APP_VERSION_CODE / APP_VERSION_NAME). Defaults: 1 / "1.0".
+// Signing:  env vars or -P properties ANDROID_KEYSTORE_FILE, ANDROID_KEYSTORE_PASSWORD,
+//           ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD. Without them the release build is unsigned,
+//           so the CI workflow uses assembleDebug (debug-signed) instead.
+def cfg = { String name, String fallback ->
+    return (project.findProperty(name) ?: System.getenv(name) ?: fallback)
+}
+def appVersionCode = cfg('APP_VERSION_CODE', '1').toString().toInteger()
+def appVersionName = cfg('APP_VERSION_NAME', '1.0').toString()
+def keystoreFile   = cfg('ANDROID_KEYSTORE_FILE', '')
+
+// Allow plain-http only when `cap sync` was run with an http:// SERVER_URL (server.cleartext = true).
+def usesCleartext = false
+def capConfigFile = file('src/main/assets/capacitor.config.json')
+if (capConfigFile.exists()) {
+    def capConfig = new JsonSlurper().parse(capConfigFile)
+    usesCleartext = (capConfig?.server?.cleartext == true)
+}
+
+android {
+    namespace "com.nvisco.playz"
+    compileSdk rootProject.ext.compileSdkVersion
+    defaultConfig {
+        applicationId "com.nvisco.playz"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode appVersionCode
+        versionName appVersionName
+        manifestPlaceholders = [usesCleartextTraffic: usesCleartext.toString()]
+        aaptOptions {
+             // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
+             // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
+            ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
+    }
+    signingConfigs {
+        release {
+            if (keystoreFile) {
+                storeFile file(keystoreFile)
+                storePassword cfg('ANDROID_KEYSTORE_PASSWORD', '')
+                keyAlias cfg('ANDROID_KEY_ALIAS', '')
+                keyPassword cfg('ANDROID_KEY_PASSWORD', '')
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (keystoreFile) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+    lint {
+        // The thin shell has nothing worth failing a build over; never let lint block the APK.
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+repositories {
+    flatDir{
+        dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
+    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation project(':capacitor-android')
+    implementation project(':capacitor-cordova-android-plugins')
+}
+
+apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}

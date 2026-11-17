@@ -1,0 +1,26 @@
+name: Fetch product photos
+# Downloads real, freely licensed photos (Wikimedia Commons) for the cars, yachts, jets, watches, phones, art and businesses,
+# writes their credits, and commits them. Run it once, and again whenever you add items.
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Download everything again"
+        type: boolean
+        default: false
+permissions:
+  contents: write
+jobs:
+  photos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node scripts/fetch-images.mjs ${{ inputs.force && '--force' || '' }}
+      - name: Commit photos
+        run: |
+          git config user.name "photo-bot"; git config user.email "photo-bot@users.noreply.github.com"
+          git add public/photos
+          git diff --cached --quiet && echo "Nothing new" || (git commit -m "Add product photos" && git push)
