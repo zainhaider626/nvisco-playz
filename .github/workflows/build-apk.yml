@@ -41,8 +41,25 @@ jobs:
         id: key
         env:
           KS: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          SP: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KA: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KP: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          if [ -n "$KS" ]; then echo "$KS" | base64 -d > "$RUNNER_TEMP/release.keystore"; echo "signed=true" >> "$GITHUB_OUTPUT"; else echo "signed=false" >> "$GITHUB_OUTPUT"; echo "::warning::No signing key set. Building a test APK that cannot be updated in place. See BUILD-APK.md step 4."; fi
+          if [ -z "$KS" ]; then echo "signed=false" >> "$GITHUB_OUTPUT"; echo "::warning::No signing key set. Building a test APK that cannot be updated in place. See BUILD-APK.md step 4."; exit 0; fi
+          # Phones add stray spaces and line breaks when pasting; remove them.
+          clean() { printf '%s' "$1" | tr -d ' \r\n\t'; }
+          KS=$(clean "$KS"); SP=$(clean "$SP"); KA=$(clean "$KA"); KP=$(clean "${KP:-$SP}")
+          printf '%s' "$KS" | base64 -d > "$RUNNER_TEMP/release.keystore" || { echo "::error::ANDROID_KEYSTORE_BASE64 is not valid base64 (length ${#KS}). Copy the whole text again."; exit 1; }
+          echo "Secret lengths: keystore text ${#KS} chars, store password ${#SP}, alias ${#KA}, key password ${#KP}"
+          if ! keytool -list -keystore "$RUNNER_TEMP/release.keystore" -storepass "$SP" > "$RUNNER_TEMP/kt.txt" 2>&1; then
+            cat "$RUNNER_TEMP/kt.txt" | grep -v JAVA_TOOL | head -5
+            echo "::error::The signing key could not be opened: ANDROID_KEYSTORE_PASSWORD is wrong or ANDROID_KEYSTORE_BASE64 is cut off (expected about 3500 characters; the store password in the guide has 18)."
+            exit 1
+          fi
+          grep -i "PrivateKeyEntry" "$RUNNER_TEMP/kt.txt" | head -2
+          echo "::add-mask::$SP"; echo "::add-mask::$KP"
+          { echo "ANDROID_KEYSTORE_PASSWORD=$SP"; echo "ANDROID_KEY_ALIAS=$KA"; echo "ANDROID_KEY_PASSWORD=$KP"; } >> "$GITHUB_ENV"
+          echo "signed=true" >> "$GITHUB_OUTPUT"
       - name: Build signed release APK
         if: steps.key.outputs.signed == 'true'
         working-directory: mobile/android
@@ -50,9 +67,6 @@ jobs:
           APP_VERSION_CODE: ${{ inputs.version_code }}
           APP_VERSION_NAME: 1.0.${{ inputs.version_code }}
           ANDROID_KEYSTORE_FILE: ${{ runner.temp }}/release.keystore
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: ./gradlew --no-daemon assembleRelease && cp app/build/outputs/apk/release/app-release.apk ../../NviscoPlayz.apk
       - name: Build test APK (debug-signed)
         if: steps.key.outputs.signed != 'true'
