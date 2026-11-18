@@ -198,5 +198,7 @@ svg.art{display:block;width:100%;height:auto;aspect-ratio:3/2;border-radius:12px
 .gd ol li::marker{color:var(--tx3);font-weight:700}
 
 .pcard .tier small{white-space:nowrap}
-.lockov{background:rgba(0,0,0,.6);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
-.pcard-w.locked .pan,.pcard-w.locked .emv{opacity:.25}
+.lockov{background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.55) 70%)}
+.lockov{justify-content:flex-end;padding-bottom:44px}
+.pcard-w.locked .pcard{filter:saturate(.8) brightness(.85)}
+.pcard-w.locked .pan{opacity:.5}
