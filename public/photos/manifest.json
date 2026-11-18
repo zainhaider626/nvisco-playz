@@ -768,5 +768,26 @@
   "author": "Leonardo da Vinci",
   "license": "Public domain",
   "page": "https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg"
+ },
+ "cars-18": {
+  "file": "cars-18.png",
+  "title": "Rolls-Royce Boat Tail front.png",
+  "author": "pelican-actor",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Rolls-Royce_Boat_Tail_front.png"
+ },
+ "watches-3": {
+  "file": "watches-3.jpg",
+  "title": "Omega-Seamaster-p1020458.jpg",
+  "author": "Rama",
+  "license": "CC BY-SA 2.0 fr",
+  "page": "https://commons.wikimedia.org/wiki/File:Omega-Seamaster-p1020458.jpg"
+ },
+ "art-5": {
+  "file": "art-5.jpg",
+  "title": "Gustav Klimt - Porträt der Adele Bloch-Bauer I (1907).jpg",
+  "author": "Gustav Klimt",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Gustav_Klimt_-_Portr%C3%A4t_der_Adele_Bloch-Bauer_I_(1907).jpg"
  }
 }
