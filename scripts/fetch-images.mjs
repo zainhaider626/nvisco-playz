@@ -10,19 +10,45 @@ const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'publi
 const UA = 'NviscoPlayz/1.0 (game photo fetcher; https://github.com/zainhaider626/nvisco-playz)';
 const API = 'https://commons.wikimedia.org/w/api.php';
 const OK_LICENSE = /^(cc0|cc[- ]by|public domain|pd|attribution|gfdl)/i;
-const BAD_TITLE = /(logo|diagram|map|drawing|sketch|svg|interior|engine|wheel|detail|cockpit|dashboard|steering|badge|emblem|stamp|poster|crash|accident|damaged|wreck|cutaway|blueprint|museum shop|screenshot)/i;
+const BAD_TITLE = /(logo|diagram|map|drawing|sketch|svg|interior|engine|wheel|detail|cockpit|dashboard|steering|badge|emblem|stamp|poster|crash|accident|damaged|wreck|cutaway|blueprint|museum shop|screenshot|model car|scale model|miniature|toy|packaging|talent|portrait of|briefing|journalist|ceo|actress|actor|singer|politician|minister)/i;
+/** Hard cases: extra search phrases, words the file name must contain, and words that rule a file out. Keys are item ids. */
+export const HINTS = {
+  'cars-6': { q: ['Toyota Hilux pickup', 'Toyota Hilux'], must: /hilux/, ban: /fire|carnival|service|police|army|rescue|ambulance/ },
+  'cars-8': { q: ['Mercedes-Benz S-Class W223', 'Mercedes-Benz S-Class W222', 'Mercedes S-Class'], must: /s class|s klasse|s500|s580|s 580|s 500/, ban: /\bcl\b|cl class|c 140/ },
+  'cars-12': { q: ['Rolls-Royce Phantom VIII', 'Rolls-Royce Phantom VII'], must: /phantom/, ban: /phantom (i|ii|iii|iv|v|vi)( |$)|19[0-6]\d|boat ?tail/ },
+  'cars-18': { q: ['Rolls-Royce Boat Tail 2021', 'Rolls-Royce Boat Tail'], must: /boat ?tail/, ban: /19[0-6]\d|phantom ii/ },
+  'cars-19': { q: ['Ferrari 250 GTO 1962', 'Ferrari 250 GTO'], must: /250 gto/, ban: /cmc|modell|model|replica|lego|toy/ },
+  'yachts-3': { q: ['Azimut 55 yacht', 'Azimut motor yacht', 'Azimut yacht Monaco'], must: /azimut/, ban: /hotel|lobby|astrakhan|hostel|bank/ },
+  'yachts-4': { q: ['Sunseeker 76 Yacht', 'Sunseeker yacht', 'Sunseeker Predator'], must: /sunseeker/ },
+  'yachts-5': { q: ['Savannah yacht Feadship', 'Feadship yacht', 'Feadship superyacht'], must: /feadship|savannah/, ban: /hotel|city|county/ },
+  'watches-3': { q: ['Omega Seamaster Diver 300M', 'Omega Seamaster'], must: /seamaster/ },
+  'watches-8': { q: ['Richard Mille RM 011', 'Richard Mille watch'], must: /richard mille/, ban: /shop|mall|store|elements|kowloon/ },
+  'watches-9': { q: ['Henry Graves Supercomplication', 'Patek Philippe Graves'], must: /graves|supercomplication/ },
+  'watches-12': { q: ['Graff Hallucination watch', 'Graff Hallucination'], must: /graff/ },
+  'mobiles-4': { q: ['iPhone 16', 'iPhone 16 Pro'], must: /iphone 16/, ban: /pack|box|case|charger|label|plus/ },
+  'mobiles-5': { q: ['iPhone 16 Pro Max', 'iPhone 16 Pro'], must: /iphone 16 pro/, ban: /pack|box|case|macbook|label/ },
+  'mobiles-7': { q: ['Vertu Signature Touch', 'Vertu Signature', 'Vertu phone'], must: /vertu/ },
+  'mobiles-8': { q: ['Vertu Signature Cobra', 'Vertu Ascent', 'Vertu Constellation'], must: /vertu/ },
+  'mobiles-9': { q: ['Goldvish Le Million', 'Goldvish phone'], must: /goldvish/ },
+  'mobiles-10': { q: ['Stuart Hughes iPhone', 'Stuart Hughes iPhone 3G'], must: /stuart hughes/ },
+  'mobiles-11': { q: ['Falcon Supernova iPhone 6', 'Falcon Supernova'], must: /falcon|supernova/ },
+  'art-5': { q: ['Klimt Adele Bloch-Bauer I', 'Gustav Klimt Portrait of Adele Bloch-Bauer I'], must: /adele|bloch/, ban: /study|sketch|drawing/ },
+  // Businesses where a search only finds people or unrelated places: keep the drawing instead of a wrong photo.
+  'south_america-15': { skip: true }, 'asia-10': { skip: true }, 'north_america-10': { skip: true },
+  'art-9': { q: ['Mona Lisa Leonardo da Vinci C2RMF', 'Mona Lisa'], must: /mona lisa/, ban: /plate|painted|residenz|copy|replica|prado|crowd|louvre museum/ },
+};
 const norm = (s) => s.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
 const strip = (h) => String(h || '').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 
 /** Choose the best result for a search phrase. Exported for tests. */
-export function pickBest(pages, query, { strict = false } = {}) {
+export function pickBest(pages, query, { strict = false, must = null, ban = null } = {}) {
   const words = norm(query).split(' ').filter(w => w.length > 1);
   let best = null;
   for (const p of Object.values(pages || {})) {
     const ii = p.imageinfo?.[0]; if (!ii) continue;
     const title = norm(p.title.replace(/^File:/, '').replace(/\.\w+$/, ''));
     const lic = ii.extmetadata?.LicenseShortName?.value || '';
-    if (!/^image\/(jpeg|png)$/.test(ii.mime) || !OK_LICENSE.test(lic) || BAD_TITLE.test(title) || ii.width < 600 || ii.height < 350) continue;
+    if (!/^image\/(jpeg|png)$/.test(ii.mime) || !OK_LICENSE.test(lic) || BAD_TITLE.test(title) || (ban && ban.test(title)) || (must && !must.test(title)) || ii.width < 600 || ii.height < 350) continue;
     const hit = words.filter(w => title.includes(w)).length, ratio = hit / (words.length || 1);
     if (strict ? ratio < 0.99 : ratio < 0.5) continue;
     const landscape = ii.width / ii.height; const score = ratio * 10 + (landscape > 1.1 && landscape < 2.2 ? 2 : 0) + Math.min(2, ii.width / 2000) - (p.index ? p.index * 0.01 : 0);
@@ -51,14 +77,22 @@ async function main() {
   const mfile = path.join(OUT, 'manifest.json');
   const manifest = fs.existsSync(mfile) ? JSON.parse(fs.readFileSync(mfile, 'utf8')) : {};
   const jobs = [];
-  if (only !== 'assets') for (const it of ITEMS) jobs.push({ id: it.id, q: it.q || it.name, name: it.name, strict: false });
-  if (only !== 'items') for (const a of ASSETS) jobs.push({ id: a.id, q: a.name, name: a.name, strict: true });
+  if (only !== 'assets') for (const it of ITEMS) jobs.push({ id: it.id, q: it.q || it.name, name: it.name, strict: false, hint: HINTS[it.id] });
+  if (only !== 'items') for (const a of ASSETS) jobs.push({ id: a.id, q: a.name, name: a.name, strict: true, hint: HINTS[a.id] });
+  const redo = (process.argv.find(a => a.startsWith('--redo=')) || '').slice(7).split(',').filter(Boolean);
+  for (const id of redo) { if (manifest[id]) { try { fs.unlinkSync(path.join(OUT, manifest[id].file)); } catch {} delete manifest[id]; } }
   let got = 0, miss = [];
   for (const j of jobs) {
     if (!force && manifest[j.id] && fs.existsSync(path.join(OUT, manifest[j.id].file))) continue;
+    if (j.hint?.skip) continue;
     try {
-      let best = pickBest(await search(j.q), j.q, { strict: j.strict });
-      if (!best && !j.strict && j.q !== j.name) best = pickBest(await search(j.name), j.name);
+      let best = null;
+      if (j.hint) {
+        for (const q of j.hint.q) { best = pickBest(await search(q), q, { must: j.hint.must, ban: j.hint.ban }); if (best) break; await new Promise(s => setTimeout(s, 350)); }
+      } else {
+        best = pickBest(await search(j.q), j.q, { strict: j.strict });
+        if (!best && !j.strict && j.q !== j.name) best = pickBest(await search(j.name), j.name);
+      }
       if (!best) { miss.push(j.name); continue; }
       const ext = best.ii.mime === 'image/png' ? 'png' : 'jpg', file = `${j.id}.${ext}`;
       const img = await fetch(best.ii.thumburl || best.ii.url, { headers: { 'user-agent': UA } });
