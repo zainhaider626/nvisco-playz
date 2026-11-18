@@ -6,33 +6,41 @@ import {
 } from './gamedata.js';
 
 export const START_CASH = 50;
-export const PRESTIGE_MIN_RUN = 1e9;
+export const PRESTIGE_MIN_RUN = 1e10;          // prestige is a late-game reset: needs $10B earned in one run
 export const PRESTIGE_STAR_BONUS = 0.05;       // +5% income and tap per star
 export const TAP_LEVEL_MAX = 150;
 export const BOOST_SECONDS = 120;
 export const BOOST_COOLDOWN_SECONDS = 600;
 export const TAP_HUSTLE = 0.3;                 // each tap also pays 30% of one second of passive income
 
+// ---- late-game pricing: everything gets steeper once a price passes one million ----
+export const LATE_FROM = 1e6, LATE_POWER = 1.04;
+export const late = (c) => (c <= LATE_FROM ? c : LATE_FROM * Math.pow(c / LATE_FROM, LATE_POWER));
+export const UPGRADE_INCOME_FACTOR = 0.9;      // each upgrade level adds +90% of the level-1 income (5 levels in total)
+export const UPGRADE_COST_RATIO = 2.2;
+
 // ---- assets: one global exponential ladder, payback time slowly rising from 30 min to ~7.5 h ----
-export const assetBaseCost = (a) => 250 * Math.pow(2.15, a.index);
-export const assetPayback = (a) => 0.5 + 0.06 * a.index;                    // hours
-export const assetBaseIncome = (a) => assetBaseCost(a) / assetPayback(a);   // per hour at level 1
-export const assetIncomeAt = (a, level) => assetBaseIncome(a) * (1 + 0.6 * (level - 1));
-export const assetUpgradeCost = (a, level) => assetBaseCost(a) * Math.pow(1.9, level); // level -> level+1
+const assetRawCost = (a) => 250 * Math.pow(2.15, a.index);                    // before the late-game steepening
+export const assetBaseCost = (a) => late(assetRawCost(a));
+const rawPayback = (a) => 0.5 + 0.06 * a.index;                               // hours at the raw price
+export const assetBaseIncome = (a) => assetRawCost(a) / rawPayback(a);        // per hour at level 1
+export const assetPayback = (a) => assetBaseCost(a) / assetBaseIncome(a);     // hours; late assets pay back slower
+export const assetIncomeAt = (a, level) => assetBaseIncome(a) * (1 + UPGRADE_INCOME_FACTOR * (level - 1));
+export const assetUpgradeCost = (a, level) => late(assetRawCost(a) * Math.pow(UPGRADE_COST_RATIO, level)); // level -> level+1
 
 // ---- country branches: priced from the region's late-game assets, scaled by the country's market size ----
 export const branchCost = (code, level) => {
   const c = COUNTRY_BY_CODE[code]; if (!c) return Infinity;
   const ri = REGIONS.findIndex(r => r.id === c.region);
-  return Math.round(250 * Math.pow(2.15, ri * ASSETS_PER_REGION + 9) * c.f * Math.pow(3.2, level - 1));
+  return Math.round(late(250 * Math.pow(2.15, ri * ASSETS_PER_REGION + 9) * c.f * Math.pow(3.2, level - 1)));
 };
 
 // ---- tapping ----
 export const tapBase = (level) => Math.pow(1.9, level);
-export const tapUpgradeCost = (level) => 30 * Math.pow(2.4, level);
+export const tapUpgradeCost = (level) => late(30 * Math.pow(2.4, level));
 
 // ---- prestige ----
-export const prestigeStarsFor = (runEarned) => (runEarned >= PRESTIGE_MIN_RUN ? Math.floor(10 * (Math.log10(runEarned) - 8)) : 0);
+export const prestigeStarsFor = (runEarned) => (runEarned >= PRESTIGE_MIN_RUN ? Math.floor(10 * (Math.log10(runEarned) - 9)) : 0);
 export const prestigeMult = (stars) => 1 + PRESTIGE_STAR_BONUS * stars;
 
 export const tierFor = (score) => { let t = TIERS[0]; for (const x of TIERS) if (score >= x.min) t = x; return t; };

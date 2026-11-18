@@ -98,7 +98,7 @@ const html2 = await fetch(`${BASE}/c/${me.id}`).then(r => r.text()); ok(!html2.i
 ok((await A.get('/api/directory?open=1')).rows.some(x => x.id === me.id), 'open-for-work filter finds me now');
 
 console.log('\nPrestige');
-r = await A.post('/api/prestige'); ok(r.status === 400, 'prestige blocked below $1B');
+r = await A.post('/api/prestige'); ok(r.status === 400, 'prestige blocked below $10B');
 await setUser(aEmail, { run_earned: 5e12 });
 r = await A.post('/api/prestige');
 ok(r.status === 200 && r.state.me.stars > 0 && r.state.cash === 50 && Object.keys(r.state.owned).length === 0 && r.state.items.includes('cars-1'), `prestige resets progress, keeps trophies (+${r.state.me.stars} stars)`);

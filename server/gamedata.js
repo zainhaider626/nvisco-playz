@@ -57,7 +57,7 @@ const ASSET_NAMES = {
 };
 
 export const ASSETS_PER_REGION = 20;
-export const ASSET_MAX_LEVEL = 10;
+export const ASSET_MAX_LEVEL = 5;
 export const REGION_UNLOCK_OWNED = 10;       // own this many assets in the previous region to open the next one
 export const REGION_SET_BONUS = 0.25;        // +25% income from a region once all 20 assets are owned
 

@@ -97,7 +97,8 @@ svg.art{display:block;width:100%;height:auto;aspect-ratio:3/2;border-radius:12px
 .arttile{width:84px;flex:none;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
 .arttile svg.art{border-radius:0}
 .arthero{border-radius:16px;overflow:hidden;border:1px solid var(--line)}
-.slogo{flex:none;border-radius:11px}.tyc{flex:none;border-radius:26%}
+.slogo{flex:none;border-radius:11px;display:inline-grid;place-items:center;color:#fff;font-weight:800;letter-spacing:.02em;border:1px solid rgba(255,255,255,.18)}
+.noph{position:absolute;inset:0;display:grid;place-items:center;color:#7a7a86;background:radial-gradient(circle at 50% 35%,#24242c,#0b0b0d 78%)}.tyc{flex:none;border-radius:26%}
 .igrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .icard{background:var(--s1);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
 .icard .info{padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
@@ -105,9 +106,14 @@ svg.art{display:block;width:100%;height:auto;aspect-ratio:3/2;border-radius:12px
 .icard.leg{border-color:rgba(255,224,138,.5);box-shadow:0 0 0 1px rgba(255,224,138,.15) inset}
 
 /* ---------- tap effects ---------- */
-.mapwrap{overflow:hidden}
+.mapwrap{overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:clamp(340px,56vh,560px)}
+.mapin{position:relative;width:100%;z-index:1}
+.mapin>svg{display:block;width:100%;height:auto;position:relative;z-index:1}
+.mapwrap.pulse .mapin{animation:mapPulse .18s ease-out}
 .pfx{position:absolute;z-index:4;pointer-events:none;left:0;top:0;will-change:transform,opacity}
-.coin{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff7c2,#f4b740 55%,#b57a0a);box-shadow:0 0 8px rgba(244,183,64,.8);display:grid;place-items:center;font-size:9px;font-weight:800;color:#6a4300}
+.note{width:28px;height:14px;border-radius:2.5px;border:1px solid rgba(255,255,255,.55);display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.5),inset 0 0 0 2px rgba(255,255,255,.14);color:rgba(255,255,255,.92)}
+.note b{font-size:9px;line-height:1;font-weight:800;width:12px;height:12px;border-radius:50%;border:1px solid rgba(255,255,255,.7);display:grid;place-items:center}
+.note.n0{background:linear-gradient(135deg,#2f9e63,#14583a)}.note.n1{background:linear-gradient(135deg,#4b8fe0,#1c3f86)}.note.n2{background:linear-gradient(135deg,#d9a53a,#8a5a0c)}
 .shock{width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.9);margin:-10px 0 0 -10px}
 .shock.b{border-color:rgba(244,183,64,.9)}
 .glowdot{width:70px;height:70px;margin:-35px 0 0 -35px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.55),transparent)}
@@ -115,8 +121,7 @@ svg.art{display:block;width:100%;height:auto;aspect-ratio:3/2;border-radius:12px
 .combo{position:absolute;right:12px;top:12px;z-index:3;font-weight:800;font-size:13px;letter-spacing:.02em;padding:4px 10px;border-radius:99px;background:linear-gradient(135deg,#f4b740,#ff7a45);color:#2a1300;opacity:0;transform:scale(.7);transition:opacity .2s,transform .2s;pointer-events:none}
 .combo.on{opacity:1;transform:scale(1)}
 .mapwrap.hot{box-shadow:0 0 0 1px rgba(244,183,64,.5),0 0 32px rgba(244,183,64,.25)}
-.mapwrap.pulse>svg{animation:mapPulse .18s ease-out}
-@keyframes mapPulse{50%{transform:scale(1.012)}}
+@keyframes mapPulse{50%{transform:scale(1.02)}}
 
 /* ---------- new screens ---------- */
 .hero{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--line);background:#0b0b0e;padding:16px}
@@ -156,8 +161,42 @@ svg.art{display:block;width:100%;height:auto;aspect-ratio:3/2;border-radius:12px
 
 /* ---------- real photos over the drawing fallback ---------- */
 .phwrap{position:relative;aspect-ratio:3/2;border-radius:12px;overflow:hidden;background:#0b0b0d}
-.phwrap>svg.art{position:absolute;inset:0;width:100%;height:100%;border-radius:0}
 .phimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0b0b0d}
 .phimg.contain{object-fit:contain;background:radial-gradient(circle at 50% 40%,#2a2a32,#0b0b0d 75%)}
 .arttile .phwrap,.icard .phwrap{border-radius:0}
 .btn.sellgo{background:var(--red);color:#2b0505;font-weight:700}.btn.sellgo:active{filter:brightness(.9)}
+
+/* ---------- card gallery ---------- */
+.cardrail{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 4px 14px;margin:0 -4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.cardrail::-webkit-scrollbar{display:none}
+.cardslot{flex:0 0 88%;max-width:420px;scroll-snap-align:center}
+.cardcap{padding:10px 4px 0;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+.cardcap .t-sm{flex-basis:100%}
+.pcard.face{cursor:default;min-height:210px;display:flex;flex-direction:column}
+.pcard.face .emv{width:44px;height:33px;margin-top:18px;border-radius:7px;background:linear-gradient(135deg,#f1d98a,#b8902f 55%,#e8cf7d);box-shadow:inset 0 0 0 1px rgba(0,0,0,.25);position:relative}
+.pcard.face .emv::after{content:"";position:absolute;inset:6px 8px;border-radius:3px;border:1px solid rgba(0,0,0,.28);background:linear-gradient(90deg,transparent 48%,rgba(0,0,0,.2) 50%,transparent 52%),linear-gradient(transparent 48%,rgba(0,0,0,.2) 50%,transparent 52%)}
+.pcard.face .pan{margin-top:14px;font-size:17px;letter-spacing:.08em;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.pcard.face .foot{margin-top:auto;padding-top:14px;align-items:flex-end}
+.pcard.face .holder small{display:block;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.6;font-weight:600}
+.pcard.face .holder b{font-size:13px;letter-spacing:.04em;text-transform:uppercase;display:block;max-width:150px}
+.pcard-w.locked .pcard{filter:saturate(.55) brightness(.7)}
+.lockov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:rgba(0,0,0,.38);color:#fff;text-align:center;border-radius:inherit}
+.lockov b{font-size:15px;margin-top:6px}.lockov span{font-size:12px;opacity:.8}
+.pcard-w.now{box-shadow:0 0 0 2px rgba(255,255,255,.6),0 14px 40px -12px rgba(255,255,255,.18);border-radius:calc(var(--rl) + 2px)}
+.pcard .tier small svg{vertical-align:-1px}
+
+/* ---------- how to use ---------- */
+.guidecard{display:flex;align-items:center;gap:12px;cursor:pointer;padding:12px 14px}
+.guide{display:flex;flex-direction:column;gap:10px}
+.gd{background:var(--s1);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.gd summary{list-style:none;display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}
+.gd summary::-webkit-details-marker{display:none}
+.gd summary .grow b{display:block;font-size:15px}.gd summary small{color:var(--tx2);font-size:12px}
+.gd summary>svg{transition:transform .2s;color:var(--tx2)}.gd[open] summary>svg{transform:rotate(180deg)}
+.gd .tile{background:#fff;color:#000}
+.gd ol{margin:0;padding:2px 16px 16px 38px;display:flex;flex-direction:column;gap:9px;font-size:14px;line-height:1.5;color:#d6d6dc}
+.gd ol li::marker{color:var(--tx3);font-weight:700}
+
+.pcard .tier small{white-space:nowrap}
+.lockov{background:rgba(0,0,0,.6);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.pcard-w.locked .pan,.pcard-w.locked .emv{opacity:.25}

@@ -14,10 +14,12 @@ import { loadPhotos } from './art.js';
 import * as expand from './views/expand.js';
 import * as auction from './views/auction.js';
 import * as wallet from './views/wallet.js';
+import * as cards from './views/cards.js';
+import * as guide from './views/guide.js';
 import { openCompany } from './views/company.js';
 
-const views = { world, invest, items, trade, ranks, profile, expand, auction, wallet };
-const TAB_OF = { auction: 'ranks', wallet: 'world' };
+const views = { world, invest, items, trade, ranks, profile, expand, auction, wallet, cards, guide };
+const TAB_OF = { auction: 'ranks', wallet: 'world', cards: 'world', guide: 'world' };
 const TABS = [['world', 'World', 'globe'], ['invest', 'Invest', 'trending-up'], ['items', 'Items', 'layout-grid'], ['trade', 'Trade', 'chart-candlestick'], ['expand', 'Expand', 'flag'], ['ranks', 'Ranks', 'trophy']];
 let view = null, started = false, es = null, loops = [];
 
@@ -65,15 +67,15 @@ const RING = [4, 5, 6, 7];
 const FXN = { 1: 3, 3: 3, 2: 1, 4: 4, 7: 4 };
 function renderCard() {
   const st = S.st, t = st.me.tier, R = st.rewards, id = Math.min(7, t.id);
-  $('#card').innerHTML = `<div class="pcard-w t${id} ${RING.includes(id) ? 'ring' : ''}"><div class="pcard" data-act="open-profile" role="button" aria-label="Open profile">
+  $('#card').innerHTML = `<div class="pcard-w t${id} ${RING.includes(id) ? 'ring' : ''}"><div class="pcard" data-act="open-cards" role="button" aria-label="See all cards">
       <div class="fx">${'<i></i>'.repeat(FXN[id] || 0)}</div>
-      <div class="top"><div class="co">${avatar(st.me.company_name, st.me.logo_url, 28)}<b class="ell">${esc(st.me.company_name)}</b></div>
+      <div class="top"><div class="co" data-act="open-profile" aria-label="Open profile">${avatar(st.me.company_name, st.me.logo_url, 28)}<b class="ell">${esc(st.me.company_name)}</b></div>
         <div class="chipsvg">${ic('nfc', 22, '', 1.8)}</div></div>
       <div class="lbl">Balance</div>
       <div class="bal num" id="bal">${bigMoney(S.cash)}</div>
       <div class="stats num"><div><small>Per tap</small><b id="tapv">+${money(tapValueNow())}</b></div><div><small>Per second</small><b id="inc">+${money(st.income_per_hour / 3600)}</b></div><div><small>Per hour</small><b id="inch">+${money(st.income_per_hour)}</b></div></div>
       <div class="foot">${R.enabled && R.eligible ? `<span class="rwchip" data-act="open-wallet">${ic('hand-coins', 15, '', 2)}Today ≈ ${usdMicro(R.est_today_micro)}</span>` : '<span></span>'}
-        <div class="tier">${esc(t.name)}<small>${esc(t.card)}</small></div></div></div></div>`;
+        <div class="tier">${esc(t.name)}<small>${esc(t.card)} ${ic('chevron-right', 11, '', 2.6)}</small></div></div></div></div>`;
 }
 const updateBal = () => {
   const b = $('#bal'); if (!b) return;
@@ -84,7 +86,8 @@ const updateBal = () => {
   const mt = $('#miniTap'); if (mt) mt.textContent = `+${money(tapValueNow())}/tap`;
 };
 
-ACT['open-profile'] = () => { location.hash = '#/profile'; };
+ACT['open-profile'] = (el, e) => { e?.stopPropagation(); location.hash = '#/profile'; };
+ACT['open-cards'] = () => { location.hash = '#/cards'; };
 ACT['open-wallet'] = (el, e) => { e.stopPropagation(); location.hash = '#/profile/wallet'; };
 ACT.back = () => { if (history.length > 1) history.back(); else location.hash = '#/world'; };
 ACT.company = (el) => openCompany(el.dataset.id);
@@ -97,6 +100,7 @@ function route() {
   if (!views[tab]) tab = 'world';
   view?.destroy?.(); S.tabTimers.forEach(clearInterval); S.tabTimers = [];
   const hi = TAB_OF[tab] || tab; $$('#tabbar [data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === hi));
+  const cardEl = $('#card'); if (cardEl) cardEl.style.display = tab === 'cards' ? 'none' : '';
   const root = $('#view'); root.innerHTML = ''; root.classList.remove('view-in'); void root.offsetWidth; root.classList.add('view-in');
   view = views[tab].mount(root, parts[1], parts[2]) || {};
   if (!started) started = true; else window.scrollTo(0, 0);

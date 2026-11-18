@@ -52,6 +52,8 @@ await page.evaluate(() => document.querySelector('[data-act=branch]')?.click());
 await go('#/auction'); await shot('11-auction');
 await go('#/wallet'); await shot('12-wallet');
 await go('#/ranks'); await shot('13-ranks');
+await go('#/cards'); await shot('13b-cards'); await page.evaluate(() => document.querySelector('#rail').scrollBy(900, 0)); await shot('13c-cards-more');
+await go('#/guide'); await shot('13d-guide');
 await go('#/profile'); await shot('14-profile');
 await page.evaluate(() => window.scrollTo(0, 900)); await shot('14b-profile-low');
 ok(bal1 && bal2, 'balance renders'); console.log('balance', bal1, '→', bal2);

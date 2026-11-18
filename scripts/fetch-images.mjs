@@ -37,6 +37,17 @@ export const HINTS = {
   'south_america-15': { skip: true }, 'asia-10': { skip: true }, 'north_america-10': { skip: true },
   'art-9': { q: ['Mona Lisa Leonardo da Vinci C2RMF', 'Mona Lisa'], must: /mona lisa/, ban: /plate|painted|residenz|copy|replica|prado|crowd|louvre museum/ },
 };
+/** Extra search phrases for a business: its own name first, then shorter generic ones that must still name the kind of place. */
+const GENERIC_LAST = new Set(['co', 'group', 'fund', 'company', 'network', 'fleet', 'grid', 'works', 'startup', 'consortium', 'operator', 'agency', 'label', 'house', 'hub', 'chain', 'franchise']);
+export function assetPlan(name) {
+  const w = name.replace(/[^A-Za-z0-9 -]+/g, ' ').trim().split(/\s+/);
+  const keep = w.filter(x => !GENERIC_LAST.has(x.toLowerCase()));
+  const noun = (keep[keep.length - 1] || w[w.length - 1]).toLowerCase().replace(/s$/, '');
+  const two = keep.slice(-2).join(' '), lead = keep.slice(0, 2).join(' ');
+  const plan = [{ q: name }];
+  for (const q of [two, lead, keep.join(' ')]) if (q && !plan.some(p => p.q.toLowerCase() === q.toLowerCase())) plan.push({ q, must: new RegExp(noun.length > 3 ? noun : keep[0].toLowerCase()) });
+  return plan;
+}
 const norm = (s) => s.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
 const strip = (h) => String(h || '').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 
@@ -90,8 +101,15 @@ async function main() {
       if (j.hint) {
         for (const q of j.hint.q) { best = pickBest(await search(q), q, { must: j.hint.must, ban: j.hint.ban }); if (best) break; await new Promise(s => setTimeout(s, 350)); }
       } else {
-        best = pickBest(await search(j.q), j.q, { strict: j.strict });
-        if (!best && !j.strict && j.q !== j.name) best = pickBest(await search(j.name), j.name);
+        if (j.strict) {
+          for (const st of assetPlan(j.name)) {
+            best = pickBest(await search(st.q), st.q, { strict: !st.must, must: st.must, ban: /(man|woman|girl|boy|people|family|wedding|party|fashion|crowd|selfie|workers?|staff|opening|ceremony|protest|visit|meeting)\b/ });
+            if (best) break; await new Promise(s => setTimeout(s, 350));
+          }
+        } else {
+          best = pickBest(await search(j.q), j.q, { strict: false });
+          if (!best && j.q !== j.name) best = pickBest(await search(j.name), j.name);
+        }
       }
       if (!best) { miss.push(j.name); continue; }
       const ext = best.ii.mime === 'image/png' ? 'png' : 'jpg', file = `${j.id}.${ext}`;

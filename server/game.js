@@ -293,6 +293,6 @@ export const gamedataHandler = (_req, res) => {
       tapMaxPerSec: config.tapRefillPerSec, rewardsEnabled: config.rewardsEnabled, maxRateMicro: config.maxRateMicroPerTap, dailyUnitCap: config.dailyUnitCap,
       minWithdrawMicro: config.minWithdrawMicro, minAccountAgeDays: config.minAccountAgeDays, offlineCapHours: config.offlineCapHours,
       auction: { slots: config.auctionSlots, hours: config.auctionHours, minBidMicro: config.auctionMinBidMicro, minRaiseMicro: config.auctionMinRaiseMicro } },
-    upgradeIncomeFactor: 0.6,
+    upgradeIncomeFactor: E.UPGRADE_INCOME_FACTOR,
   });
 };

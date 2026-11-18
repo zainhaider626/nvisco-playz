@@ -64,7 +64,8 @@ function draw() {
   const st = S.st, t = st.tap;
   const maxed = t.next_cost == null;
   root.innerHTML = `
-    <div class="mapwrap" id="map">${mapSvg()}${pinsHtml()}<div id="boostBox">${boostHtml()}</div><div class="combo" id="combo"></div><div class="hint">${ic('pointer', 14, '', 2)}Tap the map to earn</div></div>
+    <div class="card guidecard" data-act="guide" role="button"><span class="tile" style="--t:#fff">${ic('info', 21)}</span><div class="grow"><div class="b">How to use this app</div><div class="t-sm muted">Simple steps for every section</div></div>${ic('chevron-right', 18)}</div>
+    <div class="mapwrap mt12" id="map"><div class="mapin">${mapSvg()}${pinsHtml()}</div><div id="boostBox">${boostHtml()}</div><div class="combo" id="combo"></div><div class="hint">${ic('pointer', 14, '', 2)}Tap anywhere here to earn</div></div>
     <div class="card row between mt12">
       <div class="row g8 grow"><span class="tile" style="--t:#f4b740">${ic('pointer', 21)}</span><div class="grow"><div class="b">Tap power <span class="chip">Lv ${t.level}</span></div>
         <div class="t-sm muted num">${money(tapValueNow())} per tap${maxed ? ' · max level' : ` → <b class="pos">${money(t.next_value)}</b>`}</div></div></div>

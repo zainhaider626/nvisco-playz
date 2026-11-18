@@ -29,6 +29,13 @@ export async function tx(fn) {
 export async function migrate() {
   const sql = fs.readFileSync(fileURLToPath(new URL('./schema.sql', import.meta.url)), 'utf8');
   await pool.query(sql);
+  // Economy v2: business upgrade levels now stop at 5 and income per level changed, so cap old levels and have every cached income recomputed.
+  const v = (await pool.query(`SELECT val FROM meta WHERE key='econ'`)).rows[0]?.val;
+  if (v !== '2') {
+    await pool.query(`UPDATE user_assets SET level = 5 WHERE level > 5`);
+    await pool.query(`UPDATE users SET income_per_hour = 0 WHERE NOT is_bot AND id IN (SELECT user_id FROM user_assets)`);
+    await pool.query(`INSERT INTO meta (key, val) VALUES ('econ','2') ON CONFLICT (key) DO UPDATE SET val='2'`);
+  }
 }
 
 /** Current reward day (YYYY-MM-DD) in the configured timezone. */

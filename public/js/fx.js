@@ -26,13 +26,15 @@ export function tapBurst(box, x, y, label, comboEl) {
   spawn(box, 'glowdot', x, y, '', [{ transform: 'scale(.3)', opacity: .9 }, { transform: `scale(${1.6 * power})`, opacity: 0 }], { duration: 420 });
   spawn(box, 'shock', x, y, '', [{ transform: 'scale(.4)', opacity: 1 }, { transform: `scale(${5 * power})`, opacity: 0 }], { duration: 520 });
   if (combo % 3 === 0) spawn(box, 'shock b', x, y, '', [{ transform: 'scale(.2)', opacity: 1 }, { transform: `scale(${8 * power})`, opacity: 0 }], { duration: 700, delay: 60 });
-  const n = Math.min(10, 5 + Math.floor(combo / 4));
+  // small banknotes burst out, flutter and fall
+  const n = Math.min(9, 5 + Math.floor(combo / 4));
   for (let i = 0; i < n; i++) {
-    const ang = -Math.PI / 2 + (Math.random() - .5) * Math.PI * 1.25, v = 44 + Math.random() * 64 * power, dx = Math.cos(ang) * v, dy = Math.sin(ang) * v;
-    spawn(box, 'coin', x - 7, y - 7, i % 4 === 0 ? '$' : '', [
-      { transform: 'translate(0,0) scale(.6) rotate(0)', opacity: 1 },
-      { transform: `translate(${dx}px,${dy}px) scale(1) rotate(${(Math.random() - .5) * 360}deg)`, opacity: 1, offset: .55 },
-      { transform: `translate(${dx * 1.15}px,${dy + 70}px) scale(.7) rotate(${(Math.random() - .5) * 540}deg)`, opacity: 0 }], { duration: 700 + Math.random() * 300 });
+    const ang = -Math.PI / 2 + (Math.random() - .5) * Math.PI * 1.1, v = 50 + Math.random() * 70 * power, dx = Math.cos(ang) * v, dy = Math.sin(ang) * v;
+    const r0 = (Math.random() - .5) * 50, r1 = r0 + (Math.random() - .5) * 220, r2 = r1 + (Math.random() - .5) * 260;
+    spawn(box, 'note n' + (i % 3), x - 14, y - 7, '<b>$</b>', [
+      { transform: `translate(0,0) scale(.5) rotate(${r0}deg)`, opacity: 1 },
+      { transform: `translate(${dx}px,${dy}px) scale(1) rotate(${r1}deg)`, opacity: 1, offset: .5 },
+      { transform: `translate(${dx * 1.2}px,${dy + 90}px) scale(.8) rotate(${r2}deg)`, opacity: 0 }], { duration: 850 + Math.random() * 350 });
   }
   const jx = (Math.random() - .5) * 26;
   spawn(box, 'num', x + jx, y - 18, label, [
