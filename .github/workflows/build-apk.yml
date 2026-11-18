@@ -48,7 +48,9 @@ jobs:
           if [ -z "$KS" ]; then echo "signed=false" >> "$GITHUB_OUTPUT"; echo "::warning::No signing key set. Building a test APK that cannot be updated in place. See BUILD-APK.md step 4."; exit 0; fi
           # Phones add stray spaces and line breaks when pasting; remove them.
           clean() { printf '%s' "$1" | tr -d ' \r\n\t'; }
-          KS=$(clean "$KS"); SP=$(clean "$SP"); KA=$(clean "$KA"); KP=$(clean "${KP:-$SP}")
+          KS=$(clean "$KS"); SP=$(clean "$SP"); KA=$(clean "$KA"); KP=$(clean "$KP")
+          # A PKCS12 key file uses one password for both; accept either secret being left out.
+          SP=${SP:-$KP}; KP=${KP:-$SP}
           printf '%s' "$KS" | base64 -d > "$RUNNER_TEMP/release.keystore" || { echo "::error::ANDROID_KEYSTORE_BASE64 is not valid base64 (length ${#KS}). Copy the whole text again."; exit 1; }
           echo "Secret lengths: keystore text ${#KS} chars, store password ${#SP}, alias ${#KA}, key password ${#KP}"
           if ! keytool -list -keystore "$RUNNER_TEMP/release.keystore" -storepass "$SP" > "$RUNNER_TEMP/kt.txt" 2>&1; then
