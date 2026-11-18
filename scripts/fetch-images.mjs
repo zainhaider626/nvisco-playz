@@ -35,6 +35,8 @@ export const HINTS = {
   'art-5': { q: ['Klimt Adele Bloch-Bauer I', 'Gustav Klimt Portrait of Adele Bloch-Bauer I'], must: /adele|bloch/, ban: /study|sketch|drawing|atelier|studio|room/ },
   // Businesses where a search only finds people or unrelated places: keep the drawing instead of a wrong photo.
   'south_america-15': { skip: true }, 'asia-10': { skip: true }, 'north_america-10': { skip: true },
+  // Checked by hand: the search only finds the wrong kind of place or people, so these show a plain tile.
+  'africa-15': { skip: true }, 'africa-16': { skip: true }, 'europe-2': { skip: true }, 'north_america-2': { skip: true }, 'north_america-7': { skip: true }, 'north_america-13': { skip: true }, 'oceania-5': { skip: true }, 'south_america-7': { skip: true }, 'south_america-14': { skip: true }, 'south_america-18': { skip: true }, 'asia-8': { skip: true }, 'europe-8': { skip: true }, 'europe-10': { skip: true }, 'europe-18': { skip: true }, 'europe-19': { skip: true }, 'europe-20': { skip: true }, 'north_america-12': { skip: true }, 'north_america-14': { skip: true }, 'north_america-15': { skip: true }, 'oceania-4': { skip: true }, 'oceania-6': { skip: true }, 'oceania-8': { skip: true }, 'oceania-11': { skip: true }, 'oceania-12': { skip: true }, 'oceania-14': { skip: true },
   'art-9': { q: ['Mona Lisa Leonardo da Vinci C2RMF', 'Mona Lisa'], must: /mona lisa/, ban: /plate|painted|residenz|copy|replica|prado|crowd|louvre museum/ },
 };
 /** Extra search phrases for a business: its own name first, then shorter generic ones that must still name the kind of place. */
