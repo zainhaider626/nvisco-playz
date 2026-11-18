@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { config } from './config.js';
-import { migrate, pool } from './db.js';
+import { migrate, pool, q } from './db.js';
 import { authRouter, readSession, requireAuth } from './auth.js';
 import { gameRouter, gamedataHandler } from './game.js';
 import { ranksRouter, companyPage, sponsorClick } from './ranks.js';
@@ -69,6 +69,7 @@ await migrate();
 await loadMarket();
 await currentSeason();
 if (config.seedDemoBots) await seedDemoBots(config.seedDemoBots);
+else { const gone = (await q(`DELETE FROM users WHERE is_bot RETURNING id`)).rowCount; if (gone) console.log(`[seed] removed ${gone} demo companies (SEED_DEMO_BOTS=0)`); }
 const server = app.listen(config.port, () => console.log(`${config.appName} listening on http://localhost:${config.port}`));
 startTicker();
 const stop = () => { server.close(); pool.end().finally(() => process.exit(0)); };

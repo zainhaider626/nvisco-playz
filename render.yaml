@@ -15,7 +15,7 @@ services:
       - { key: COOKIE_SECURE, value: "true" }
       - { key: APP_NAME, value: Nvisco Playz }
       - { key: REWARD_TZ, value: Asia/Karachi }
-      - { key: SEED_DEMO_BOTS, value: "40" }
+      - { key: SEED_DEMO_BOTS, value: "0" }
       - { key: JWT_SECRET, generateValue: true }
       - { key: ADMIN_USERNAME, sync: false }
       - { key: ADMIN_PASSWORD, sync: false }
