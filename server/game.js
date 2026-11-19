@@ -13,6 +13,8 @@ export const gameRouter = Router();
 
 // ------------------------------------------------------------------ helpers
 const OFFLINE_CAP_MS = config.offlineCapHours * 3600e3;
+const SELL_COOLDOWN_MS = 12 * 3600e3;
+export const SELL_REFUND = 0.6, MAX_BOOSTS = 5, SELL_MIN_ASSETS = 3;
 
 /** Lock the player row, credit passive income earned since last time (capped offline), and touch last_seen. */
 export async function loadAndAccrue(c, uid) {
@@ -27,12 +29,13 @@ export async function loadAndAccrue(c, uid) {
   const away = now - u.last_seen.getTime() > 120000 ? g : 0;
   u.cash += g; u.lifetime_earned += g; u.run_earned += g; u.season_earned += g; u.away_earned += away;
   u.last_accrual = u.now_ts; u.last_seen = u.now_ts;
+  if (g > 0.0001 && u.income_per_hour > 0) await c.query(`UPDATE user_assets SET earned = earned + income_per_hour * $2 / $3 WHERE user_id=$1 AND income_per_hour > 0`, [uid, g, u.income_per_hour]);
   return u;
 }
 
 const SAVE_COLS = ['cash', 'lifetime_earned', 'run_earned', 'season_earned', 'away_earned', 'income_per_hour', 'tap_bonus', 'tap_level', 'tap_total',
   'assets_value', 'items_value', 'portfolio_value', 'trade_pnl', 'trade_pnl_peak', 'prestige_count', 'prestige_stars', 'tap_tokens', 'tap_token_ts',
-  'boost_until', 'boost_ready_at', 'last_accrual', 'last_seen'];
+  'boost_until', 'boost_ready_at', 'last_accrual', 'last_seen', 'rank_boosts', 'last_sold_at'];
 
 export async function save(c, u) {
   u.net_worth = u.cash + u.assets_value + u.items_value + u.portfolio_value;
@@ -42,36 +45,42 @@ export async function save(c, u) {
 }
 
 export async function loadOwned(c, uid) {
-  const [a, i, h, br, pa] = await Promise.all([
+  const [a, i, h, br, pa, of] = await Promise.all([
     c.query(`SELECT asset_id, level FROM user_assets WHERE user_id=$1`, [uid]),
     c.query(`SELECT item_id FROM user_items WHERE user_id=$1`, [uid]),
-    c.query(`SELECT stock_id, shares::text AS shares, cost FROM holdings WHERE user_id=$1 AND shares > 0`, [uid]),
+    c.query(`SELECT stock_id, shares::text AS shares, cost, stop_loss, take_profit FROM holdings WHERE user_id=$1 AND shares > 0`, [uid]),
     c.query(`SELECT country, level FROM user_branches WHERE user_id=$1`, [uid]),
     c.query(`SELECT COUNT(*)::int AS n FROM partnerships WHERE status='active' AND (requester=$1 OR partner=$1)`, [uid]),
+    c.query(`SELECT offer_id FROM user_offers WHERE user_id=$1`, [uid]),
   ]);
+  const offers = of.rows.map(r => G.offerById(r.offer_id)).filter(Boolean);
   return {
     owned: new Map(a.rows.map(r => [r.asset_id, r.level])),
     items: new Set(i.rows.map(r => r.item_id)),
-    holdings: h.rows.map(r => ({ id: r.stock_id, shares: Number(r.shares), cost: r.cost })),
+    holdings: h.rows.map(r => ({ id: r.stock_id, shares: Number(r.shares), cost: r.cost, stop_loss: r.stop_loss, take_profit: r.take_profit })),
     branches: new Map(br.rows.map(r => [r.country.trim(), r.level])),
     partners: pa.rows[0].n,
+    offers,
   };
 }
 
 /** Recompute every cached number that depends on what the player owns. */
 export async function rederive(c, u) {
-  const { owned, items, holdings, branches, partners } = await loadOwned(c, u.id);
-  const d = E.derive({ owned, items, stars: u.prestige_stars, tapLevel: u.tap_level, branches, partners });
+  const { owned, items, holdings, branches, partners, offers } = await loadOwned(c, u.id);
+  const d = E.derive({ owned, items, stars: u.prestige_stars, tapLevel: u.tap_level, branches, partners, offerPct: offers.reduce((t, o) => t + o.pct, 0) });
+  const ids = Object.keys(d.perAsset);
+  if (ids.length) await c.query(`UPDATE user_assets ua SET income_per_hour = v.i FROM (SELECT unnest($2::text[]) AS id, unnest($3::float8[]) AS i) v WHERE ua.user_id=$1 AND ua.asset_id = v.id`, [u.id, ids, ids.map(i => d.perAsset[i])]);
   u.income_per_hour = d.incomePerHour; u.tap_bonus = d.tapBonus; u.assets_value = d.assetsValue; u.items_value = d.itemsValue;
   u.portfolio_value = holdings.reduce((s, h) => s + h.shares * priceOf(h.id), 0);
-  return { owned, items, holdings, branches, partners, d };
+  return { owned, items, holdings, branches, partners, offers, d };
 }
 
 const boosted = (u) => u.boost_until && u.boost_until.getTime() > Date.now();
 
 export async function stateOf(c, u, { consume = false } = {}) {
   const day = await rewardDay(c);
-  const { owned, items, holdings, branches, partners, d } = await loadOwned(c, u.id).then(async o => ({ ...o, d: E.derive({ owned: o.owned, items: o.items, stars: u.prestige_stars, tapLevel: u.tap_level, branches: o.branches, partners: o.partners }) }));
+  const { owned, items, holdings, branches, partners, offers, d } = await loadOwned(c, u.id).then(async o => ({ ...o, d: E.derive({ owned: o.owned, items: o.items, stars: u.prestige_stars, tapLevel: u.tap_level, branches: o.branches, partners: o.partners, offerPct: o.offers.reduce((t, x) => t + x.pct, 0) }) }));
+  const rev = (await c.query(`SELECT asset_id, income_per_hour AS ph, earned FROM user_assets WHERE user_id=$1`, [u.id])).rows;
   const season = await currentSeason(c);
   const tv = E.tapValue({ tapLevel: u.tap_level, tapBonus: u.tap_bonus, stars: u.prestige_stars, incomePerHour: u.income_per_hour, boosted: boosted(u) });
   const gain = E.prestigeStarsFor(u.run_earned);
@@ -99,7 +108,10 @@ export async function stateOf(c, u, { consume = false } = {}) {
     tap: { level: u.tap_level, value: tv, base: E.tapValue({ tapLevel: u.tap_level, tapBonus: u.tap_bonus, stars: u.prestige_stars, incomePerHour: u.income_per_hour, boosted: false }), next_cost: u.tap_level >= E.TAP_LEVEL_MAX ? null : E.tapUpgradeCost(u.tap_level), next_value: E.tapValue({ tapLevel: u.tap_level + 1, tapBonus: u.tap_bonus, stars: u.prestige_stars, incomePerHour: u.income_per_hour, boosted: boosted(u) }),
             boost_until: u.boost_until, boost_ready_at: u.boost_ready_at, max: E.TAP_LEVEL_MAX },
     owned: Object.fromEntries(owned), items: [...items],
-    holdings: Object.fromEntries(holdings.map(h => [h.id, { shares: h.shares, cost: h.cost }])),
+    holdings: Object.fromEntries(holdings.map(h => [h.id, { shares: h.shares, cost: h.cost, stop_loss: h.stop_loss, take_profit: h.take_profit }])),
+    rev: Object.fromEntries(rev.map(r => [r.asset_id, { ph: r.ph, earned: r.earned }])),
+    offers: offers.map(o => ({ id: o.id, country: o.country, name: o.name, kind: o.kind, pct: o.pct, per_hour: d.baseIncomePerHour * o.pct })),
+    rank_boosts: u.rank_boosts, biz_value: d.bizValue, sell_ready_at: u.last_sold_at ? new Date(u.last_sold_at.getTime() + SELL_COOLDOWN_MS) : null,
     region_counts: d.regionCounts, cat_counts: d.catCounts, income_bonus: d.incomeBonus, tap_bonus: u.tap_bonus, mult: d.mult,
     prestige: { gain, min_run: E.PRESTIGE_MIN_RUN, mult_now: E.prestigeMult(u.prestige_stars), mult_next: E.prestigeMult(u.prestige_stars + gain), count: u.prestige_count, stars: u.prestige_stars },
     season: { id: season.id, ends_at: season.ends_at },
@@ -234,10 +246,51 @@ gameRouter.post('/trade', act(async (c, u, req) => {
       const e = u.trade_pnl - u.trade_pnl_peak; u.trade_pnl_peak = u.trade_pnl;
       u.lifetime_earned += e; u.run_earned += e; u.season_earned += e;
     }
-    await c.query(`UPDATE holdings SET shares = shares - $3, cost = cost - $4 WHERE user_id=$1 AND stock_id=$2`, [u.id, s.id, shares, basis]);
+    await c.query(`UPDATE holdings SET shares = shares - $3, cost = cost - $4, stop_loss = CASE WHEN shares - $3 <= 0 THEN NULL ELSE stop_loss END, take_profit = CASE WHEN shares - $3 <= 0 THEN NULL ELSE take_profit END WHERE user_id=$1 AND stock_id=$2`, [u.id, s.id, shares, basis]);
   }
   const pv = await c.query(`SELECT stock_id, shares::text AS shares FROM holdings WHERE user_id=$1 AND shares > 0`, [u.id]);
   u.portfolio_value = pv.rows.reduce((t, r) => t + Number(r.shares) * priceOf(r.stock_id), 0);
+}));
+
+// stop-loss / take-profit: the server sells the whole position when the shared price touches the line
+gameRouter.post('/trade/orders', act(async (c, u, req) => {
+  const s = G.STOCK_BY_ID[req.body?.stock_id]; if (!s) throw bad('Unknown stock');
+  const num = (v) => (v === null || v === undefined || v === '' ? null : Number(v));
+  const sl = num(req.body?.stop_loss), tp = num(req.body?.take_profit), price = priceOf(s.id);
+  if ((sl !== null && !(sl > 0)) || (tp !== null && !(tp > 0))) throw bad('Enter a price above zero');
+  const hr = await c.query(`SELECT shares FROM holdings WHERE user_id=$1 AND stock_id=$2 AND shares > 0 FOR UPDATE`, [u.id, s.id]);
+  if (!hr.rows[0]) throw bad('Buy some shares first');
+  if (sl !== null && sl >= price) throw bad('Stop loss must be below the current price');
+  if (tp !== null && tp <= price) throw bad('Take profit must be above the current price');
+  await c.query(`UPDATE holdings SET stop_loss=$3, take_profit=$4 WHERE user_id=$1 AND stock_id=$2`, [u.id, s.id, sl, tp]);
+}));
+
+// ------------------------------------------------------------------ sell the whole business -> rank boost
+gameRouter.post('/business/sell', act(async (c, u) => {
+  const { owned, items, branches, partners, offers } = await loadOwned(c, u.id);
+  if (owned.size < SELL_MIN_ASSETS) throw bad(`Own at least ${SELL_MIN_ASSETS} businesses before you sell`);
+  if (u.last_sold_at && Date.now() - u.last_sold_at.getTime() < SELL_COOLDOWN_MS) throw bad('You sold your business recently. Try again later.');
+  if (u.rank_boosts >= MAX_BOOSTS) throw bad(`You already hold ${MAX_BOOSTS} rank boosts. Use one first.`);
+  const d = E.derive({ owned, items, stars: u.prestige_stars, tapLevel: u.tap_level, branches, partners, offerPct: offers.reduce((t, o) => t + o.pct, 0) });
+  const refund = d.bizValue * SELL_REFUND;
+  await c.query(`DELETE FROM user_assets WHERE user_id=$1`, [u.id]);
+  u.cash += refund; u.rank_boosts += 1; u.last_sold_at = new Date();
+  await rederive(c, u);
+  return { refund, rank_boosts: u.rank_boosts };
+}));
+
+// use a rank boost: jump up five places on the world board (kept for later when you are already #1)
+gameRouter.post('/rank/boost', act(async (c, u) => {
+  if (u.rank_boosts < 1) throw bad('You have no rank boosts. Sell your business to earn one.');
+  const r = (await c.query(`SELECT COUNT(*)::int + 1 AS r FROM users WHERE status <> 'banned' AND lifetime_earned > $1`, [u.lifetime_earned])).rows[0].r;
+  if (r <= 1) throw bad('You are already #1. Your boost is saved for when someone passes you.');
+  const target = Math.max(1, r - 5);
+  const t = (await c.query(`SELECT id, lifetime_earned FROM users WHERE status <> 'banned' AND id <> $2 ORDER BY lifetime_earned DESC, id LIMIT 1 OFFSET $1`, [target - 1, u.id])).rows[0];
+  if (!t) throw bad('Nothing to jump over yet');
+  const jump = Math.max(0, t.lifetime_earned - u.lifetime_earned) + 0.01;
+  u.lifetime_earned += jump;
+  u.rank_boosts -= 1;
+  return { from: r, to: target, boosts_left: u.rank_boosts };
 }));
 
 // ------------------------------------------------------------------ prestige
@@ -278,7 +331,7 @@ gameRouter.post('/rewards/withdraw', asyncH(async (req, res) => {
 export const gamedataHandler = (_req, res) => {
   res.set('Cache-Control', 'public, max-age=300');
   res.json({
-    regions: G.REGIONS, categories: G.CATEGORIES, regionUnlockOwned: G.REGION_UNLOCK_OWNED, regionSetBonus: G.REGION_SET_BONUS, assetMaxLevel: G.ASSET_MAX_LEVEL,
+    regions: G.REGIONS, categories: G.CATEGORIES, perRegion: G.ASSETS_PER_REGION, regionUnlockOwned: G.REGION_UNLOCK_OWNED, regionSetBonus: G.REGION_SET_BONUS, assetMaxLevel: G.ASSET_MAX_LEVEL,
     assets: G.ASSETS.map(a => ({ id: a.id, region: a.region, regionIndex: a.regionIndex, k: a.k, index: a.index, cat: a.cat, name: a.name, cost: E.assetBaseCost(a), income: E.assetBaseIncome(a), payback: E.assetPayback(a),
       upgrade: Array.from({ length: G.ASSET_MAX_LEVEL - 1 }, (_, i) => E.assetUpgradeCost(a, i + 1)) })),
     itemCategories: G.ITEM_CATEGORIES, items: G.ITEMS.map(({ q, ...i }) => i),
@@ -287,12 +340,12 @@ export const gamedataHandler = (_req, res) => {
     tiers: G.TIERS, industries: G.INDUSTRIES,
     expand: {
       regionCountries: Object.fromEntries(Object.entries(G.REGION_COUNTRIES).map(([r, l]) => [r, l.map(([code]) => ({ code, costs: Array.from({ length: G.BRANCH_MAX_LEVEL }, (_, i) => E.branchCost(code, i + 1)) }))])),
-      maxLevel: G.BRANCH_MAX_LEVEL, incomePerLevel: G.BRANCH_INCOME_PER_LEVEL, regionSetBonus: G.BRANCH_REGION_SET_BONUS, partnerBonus: G.PARTNER_INCOME_BONUS, partnerMax: G.PARTNER_MAX,
+      sell: { refund: SELL_REFUND, minAssets: SELL_MIN_ASSETS, max: MAX_BOOSTS }, offerMax: G.OFFER_MAX, offerTiers: G.OFFER_TIERS, maxLevel: G.BRANCH_MAX_LEVEL, incomePerLevel: G.BRANCH_INCOME_PER_LEVEL, regionSetBonus: G.BRANCH_REGION_SET_BONUS, partnerBonus: G.PARTNER_INCOME_BONUS, partnerMax: G.PARTNER_MAX,
     },
     config: { appName: config.appName, boostSeconds: E.BOOST_SECONDS, boostCooldown: E.BOOST_COOLDOWN_SECONDS, prestigeMinRun: E.PRESTIGE_MIN_RUN, prestigeStarBonus: E.PRESTIGE_STAR_BONUS,
       tapMaxPerSec: config.tapRefillPerSec, rewardsEnabled: config.rewardsEnabled, maxRateMicro: config.maxRateMicroPerTap, dailyUnitCap: config.dailyUnitCap,
       minWithdrawMicro: config.minWithdrawMicro, minAccountAgeDays: config.minAccountAgeDays, offlineCapHours: config.offlineCapHours,
       auction: { slots: config.auctionSlots, hours: config.auctionHours, minBidMicro: config.auctionMinBidMicro, minRaiseMicro: config.auctionMinRaiseMicro } },
-    upgradeIncomeFactor: E.UPGRADE_INCOME_FACTOR,
+    upgradeIncomeRatio: E.UPGRADE_INCOME_RATIO,
   });
 };

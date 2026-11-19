@@ -2,6 +2,7 @@ import { pool, q, tx, rewardDay } from './db.js';
 import { config } from './config.js';
 import { stepMarket, persistMarket, getMarket, pruneTicks } from './market.js';
 import { closeDueAuctions } from './auction.js';
+import { runOrders } from './orders.js';
 import { rolloverIfDue, assignLeague, currentSeason } from './leagues.js';
 import * as rewards from './rewards.js';
 import { connectedUserIds, sendTo, heartbeat } from './sse.js';
@@ -23,13 +24,21 @@ export async function tick() {
       // players with an open connection are present: keep their "last seen" fresh so they never get a fake "while you were away" bonus
       const here = connectedUserIds(); if (here.length) await q(`UPDATE users SET last_seen = now() WHERE id = ANY($1)`, [here]);
       // 1. passive income for everyone, capped at the offline limit
-      await q(`UPDATE users SET
-                 cash = cash + g.g, lifetime_earned = lifetime_earned + g.g, run_earned = run_earned + g.g, season_earned = season_earned + g.g,
-                 away_earned = away_earned + CASE WHEN users.last_seen < now() - interval '2 minutes' THEN g.g ELSE 0 END,
-                 last_accrual = now(), net_worth = users.cash + g.g + assets_value + items_value + portfolio_value
-               FROM (SELECT id, income_per_hour * GREATEST(0, EXTRACT(EPOCH FROM (LEAST(now(), last_seen + ($1 || ' hours')::interval) - last_accrual))) / 3600 AS g
-                     FROM users WHERE income_per_hour > 0 AND status <> 'banned') g
-               WHERE users.id = g.id`, [String(config.offlineCapHours)]);
+      await q(`WITH g AS (SELECT id, income_per_hour AS iph, income_per_hour * GREATEST(0, EXTRACT(EPOCH FROM (LEAST(now(), last_seen + ($1 || ' hours')::interval) - last_accrual))) / 3600 AS g
+                          FROM users WHERE income_per_hour > 0 AND status <> 'banned'),
+                    up AS (UPDATE users SET
+                      cash = cash + g.g, lifetime_earned = lifetime_earned + g.g, run_earned = run_earned + g.g, season_earned = season_earned + g.g,
+                      away_earned = away_earned + CASE WHEN users.last_seen < now() - interval '2 minutes' THEN g.g ELSE 0 END,
+                      last_accrual = now(), net_worth = users.cash + g.g + assets_value + items_value + portfolio_value
+                    FROM g WHERE users.id = g.id RETURNING users.id AS id, g.g AS gain, g.iph AS iph)
+               UPDATE user_assets ua SET earned = ua.earned + up.gain * ua.income_per_hour / up.iph FROM up WHERE ua.user_id = up.id AND up.iph > 0 AND ua.income_per_hour > 0`, [String(config.offlineCapHours)]);
+      // 1b. sample companies never pass the best real player: each one is held below its own share of the real top score
+      await q(`UPDATE users b SET lifetime_earned = LEAST(b.lifetime_earned, b.sample_cap * GREATEST(t.top, 1000)),
+                 cash = LEAST(b.cash, b.sample_cap * GREATEST(t.top, 1000)), run_earned = LEAST(b.run_earned, b.sample_cap * GREATEST(t.top, 1000)),
+                 season_earned = LEAST(b.season_earned, b.sample_cap * GREATEST(t.top, 1000)),
+                 net_worth = LEAST(b.lifetime_earned, b.sample_cap * GREATEST(t.top, 1000)),
+                 income_per_hour = LEAST(b.income_per_hour, GREATEST(LEAST(b.lifetime_earned, b.sample_cap * GREATEST(t.top, 1000)), 600) / 6)
+               FROM (SELECT COALESCE(MAX(lifetime_earned), 0) AS top FROM users WHERE NOT is_bot AND status <> 'banned') t WHERE b.is_sample`);
       // 2. shared stock market moves, then everyone's portfolio is re-valued
       await persistMarket();
       await q(`UPDATE users u SET portfolio_value = p.v, net_worth = u.cash + u.assets_value + u.items_value + p.v
@@ -65,10 +74,11 @@ function marketLoop() {
   const m = getMarket(), msg = { t: m.t, stocks: m.stocks.map(s => ({ id: s.id, price: s.price, chg: s.chg })) };
   for (const id of ids) sendTo(id, 'market', msg);
 }
+async function marketStep() { marketLoop(); try { await runOrders(); } catch (e) { console.error('[orders]', e.message); } }
 
 export function startTicker() {
   setInterval(tick, config.tickSeconds * 1000);
-  setInterval(marketLoop, STOCK_STEP_SECONDS * 1000);
+  setInterval(marketStep, STOCK_STEP_SECONDS * 1000);
   setInterval(heartbeat, 25000);
   setTimeout(tick, 1500);
 }
@@ -100,4 +110,29 @@ export async function seedDemoBots(count) {
     } catch (e) { if (e.code !== '23505') throw e; }
   }
   if (made) console.log(`[seed] created ${made} demo companies`);
+}
+
+// ---------------------------------------------------------------------------- sample companies (invented; shown with a small "Sample" badge on their own page)
+const SAMPLES = [
+  { key: 'gb', name: 'Marlowe Row Coffee Roasters', country: 'GB', industry: 'Food & Hospitality', city: 'London', tagline: 'Small-batch coffee roasted in East London',
+    description: 'A neighbourhood roastery that supplies cafés and office kitchens across London. Slow, steady growth.', income: 140, growth: 0.003, cap: 0.55 },
+  { key: 'it', name: 'Bottega Lunare Ceramiche', country: 'IT', industry: 'Design & Creative', city: 'Florence', tagline: 'Hand-painted ceramics from a family workshop',
+    description: 'A small ceramics studio selling tableware to local shops. Steady and simple: it earns a little every hour and does not expand.', income: 45, growth: 0, cap: 0.25 },
+  { key: 'ng', name: 'Ibadan Greenfield Agro', country: 'NG', industry: 'Manufacturing', city: 'Ibadan', tagline: 'Cassava and maize processing for local markets',
+    description: 'An agro-processing start-up that is opening new buyers every month. Growing fast.', income: 260, growth: 0.02, cap: 0.8 },
+  { key: 'tr', name: 'Kervan Tekstil Atölyesi', country: 'TR', industry: 'Manufacturing', city: 'Bursa', tagline: 'Cotton fabric and home textiles from Bursa',
+    description: 'A family textile workshop selling towels and bed linen to regional retailers. Slow, careful growth.', income: 110, growth: 0.002, cap: 0.4 },
+  { key: 'pk', name: 'Sialkot Crest Sports Goods', country: 'PK', industry: 'Manufacturing', city: 'Sialkot', tagline: 'Footballs and training gear made in Sialkot',
+    description: 'A sports-goods maker taking on new export orders. Growing quickly.', income: 320, growth: 0.016, cap: 0.65 },
+];
+export async function seedSampleCompanies() {
+  let made = 0;
+  for (const sc of SAMPLES) {
+    const earned = sc.income * (30 + Math.random() * 30);
+    const r = await q(`INSERT INTO users (email, pass_hash, company_name, tagline, description, industry, country, city, is_bot, is_sample, sample_cap, income_per_hour, bot_growth, cash, lifetime_earned, run_earned, net_worth, tap_total)
+       VALUES ($1,'!',$2,$3,$4,$5,$6,$7,TRUE,TRUE,$8,$9,$10,$11,$11,$11,$11,$12) ON CONFLICT DO NOTHING RETURNING id`,
+      [`sample-${sc.key}@bots.invalid`, sc.name, sc.tagline, sc.description, sc.industry, sc.country, sc.city, sc.cap, sc.income, sc.growth, earned, Math.floor(earned / 6)]);
+    if (r.rows[0]) { made++; await tx(c => assignLeague(c, r.rows[0].id, 0)); }
+  }
+  if (made) console.log(`[seed] created ${made} sample companies`);
 }

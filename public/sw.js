@@ -1,5 +1,5 @@
 // Network-first for everything on this origin (the game is live data); cached shell is only a fallback when offline.
-const V = 'np-v3';
+const V = 'np-v4';
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(V).then(c => c.addAll(['/', '/app.css', '/theme.css', '/js/main.js', '/brand/logo-white.png'])).catch(() => {})); self.skipWaiting(); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', (e) => {

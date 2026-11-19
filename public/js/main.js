@@ -68,9 +68,10 @@ const FXN = { 1: 3, 3: 3, 2: 1, 4: 4, 7: 4 };
 function renderCard() {
   const st = S.st, t = st.me.tier, R = st.rewards, id = Math.min(7, t.id);
   $('#card').innerHTML = `<div class="pcard-w t${id} ${RING.includes(id) ? 'ring' : ''}"><div class="pcard" data-act="open-cards" role="button" aria-label="See all cards">
-      <div class="fx">${'<i></i>'.repeat(FXN[id] || 0)}</div>
+      <div class="fx">${'<i></i>'.repeat(FXN[id] || 0)}</div><div class="sheen"></div>
       <div class="top"><div class="co" data-act="open-profile" aria-label="Open profile">${avatar(st.me.company_name, st.me.logo_url, 28)}<b class="ell">${esc(st.me.company_name)}</b></div>
         <div class="chipsvg">${ic('nfc', 22, '', 1.8)}</div></div>
+      <div class="emvrow"><span class="emv"></span><span class="pan num">•••• •••• •••• ${String(4000 + (st.me.id * 7919) % 6000).slice(-4)}</span></div>
       <div class="lbl">Balance</div>
       <div class="bal num" id="bal">${bigMoney(S.cash)}</div>
       <div class="stats num"><div><small>Per tap</small><b id="tapv">+${money(tapValueNow())}</b></div><div><small>Per second</small><b id="inc">+${money(st.income_per_hour / 3600)}</b></div><div><small>Per hour</small><b id="inch">+${money(st.income_per_hour)}</b></div></div>
@@ -113,7 +114,7 @@ document.addEventListener('click', (e) => { const el = e.target.closest('[data-a
 function startLive() {
   stop(); started = false;
   let last = performance.now();
-  loops.push(setInterval(() => { const now = performance.now(), dt = Math.min(5, (now - last) / 1000); last = now; if (!S.st || document.hidden) return; S.cash += S.st.income_per_hour / 3600 * dt; updateBal(); }, 250));
+  loops.push(setInterval(() => { const now = performance.now(), dt = Math.min(5, (now - last) / 1000); last = now; if (!S.st || document.hidden) return; S.cash += S.st.income_per_hour / 3600 * dt; updateBal(); }, 100));
   loops.push(setInterval(() => view?.update?.('sec'), 1000));
   es = new EventSource('/api/stream');
   es.addEventListener('tick', (e) => applyTick(JSON.parse(e.data)));
@@ -149,7 +150,9 @@ function applyTick(d) {
   st.cash = me.cash; st.score = me.score; st.season_earned = me.season_earned; st.net_worth = me.net_worth; st.portfolio_value = me.portfolio_value;
   if (me.income_per_hour != null) st.income_per_hour = me.income_per_hour;
   if (me.credits_micro != null) st.credits_micro = me.credits_micro;
-  S.cash = me.cash + S.pendingTaps * tapValueNow();
+  // the balance already ticks up every 100 ms; only correct it when it has really drifted, so +$200/s stays a smooth +$200 each second
+  const target = me.cash + S.pendingTaps * tapValueNow();
+  if (Math.abs(target - S.cash) > Math.max(1, st.income_per_hour / 3600 * 3)) S.cash = target;
   emit('tick');
 }
 

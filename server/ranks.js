@@ -18,7 +18,7 @@ const COLS = `u.id, u.company_name, u.country, u.logo_url, u.banner_url, u.indus
 
 const shape = (r, rank, meId) => ({
   rank, id: r.id, company_name: r.company_name, country: r.country.trim(), logo_url: r.logo_url, industry: r.industry,
-  score: r.score, season_earned: r.season_earned, demo: r.is_bot, featured: r.featured, me: r.id === meId,
+  score: r.score, season_earned: r.season_earned, demo: false, featured: r.featured, me: r.id === meId,
   tier: E.tierFor(r.score).name, tier_id: E.tierFor(r.score).id,
 });
 

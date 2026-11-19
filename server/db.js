@@ -1,3 +1,4 @@
+import { ASSETS } from './gamedata.js';
 import pg from 'pg';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -31,10 +32,15 @@ export async function migrate() {
   await pool.query(sql);
   // Economy v2: business upgrade levels now stop at 5 and income per level changed, so cap old levels and have every cached income recomputed.
   const v = (await pool.query(`SELECT val FROM meta WHERE key='econ'`)).rows[0]?.val;
-  if (v !== '2') {
+  if (!['2', '3', '4'].includes(v)) {
     await pool.query(`UPDATE user_assets SET level = 5 WHERE level > 5`);
     await pool.query(`UPDATE users SET income_per_hour = 0 WHERE NOT is_bot AND id IN (SELECT user_id FROM user_assets)`);
-    await pool.query(`INSERT INTO meta (key, val) VALUES ('econ','2') ON CONFLICT (key) DO UPDATE SET val='2'`);
+  }
+  if (v !== '4') {
+    // Economy v3/v4: ten assets per region (assets that no longer exist are removed) and a per-business income column; cached incomes are recomputed on next open.
+    await pool.query(`DELETE FROM user_assets WHERE asset_id <> ALL($1::text[])`, [ASSETS.map(a => a.id)]);
+    await pool.query(`UPDATE users SET income_per_hour = 0 WHERE NOT is_bot AND id IN (SELECT user_id FROM user_assets)`);
+    await pool.query(`INSERT INTO meta (key, val) VALUES ('econ','4') ON CONFLICT (key) DO UPDATE SET val='4'`);
   }
 }
 

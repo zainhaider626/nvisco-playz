@@ -12,10 +12,10 @@ const seenSponsors = new Set();
 function mapSvg() {
   const { map } = S, regs = S.data.regions;
   const paths = regs.map((r, i) => {
-    const n = regionOwned(r.id), f = n / 20, open = regionUnlocked(i);
+    const n = regionOwned(r.id), f = n / S.data.perRegion, open = regionUnlocked(i);
     const fill = n ? r.color : open ? '#3a5688' : '#25304a';
     const op = n ? (0.6 + 0.4 * f).toFixed(2) : '1';
-    const glow = n === 20 ? `style="filter:drop-shadow(0 0 6px ${r.color})"` : '';
+    const glow = n === S.data.perRegion ? `style="filter:drop-shadow(0 0 6px ${r.color})"` : '';
     const edge = !n && open ? `stroke="${r.color}" stroke-opacity=".8" stroke-width="1.6"` : '';
     return `<path class="cont" d="${map.continents[r.id]}" fill="${fill}" opacity="${op}" ${edge} ${glow}/>`;
   }).join('');
@@ -26,7 +26,7 @@ function pinsHtml() {
   return S.data.regions.map((r, i) => {
     const [x, y] = map.centers[r.id], n = regionOwned(r.id), open = regionUnlocked(i);
     const name = r.name.replace('North America', 'N. America').replace('South America', 'S. America');
-    return `<span class="mpin" style="left:${(x / W * 100).toFixed(2)}%;top:${(y / H * 100).toFixed(2)}%;${open ? '' : 'opacity:.55'}">${open ? '' : ic('lock', 11, '', 2.4) + ' '}${esc(name)}${n ? `<i>${Math.round(n / 20 * 100)}%</i>` : ''}</span>`;
+    return `<span class="mpin" style="left:${(x / W * 100).toFixed(2)}%;top:${(y / H * 100).toFixed(2)}%;${open ? '' : 'opacity:.55'}">${open ? '' : ic('lock', 11, '', 2.4) + ' '}${esc(name)}${n ? `<i>${Math.round(n / S.data.perRegion * 100)}%</i>` : ''}</span>`;
   }).join('');
 }
 
@@ -78,8 +78,8 @@ function draw() {
     ${section('Your conquest')}
     <div class="group">${S.data.regions.map((r, i) => { const n = regionOwned(r.id), open = regionUnlocked(i); return `<div class="li" ${open ? `data-act="region" data-id="${r.id}"` : ''} style="${open ? '' : 'opacity:.55'}">
         <span class="tile" style="--t:${r.color}">${ic(open ? 'map-pin' : 'lock', 20)}</span>
-        <div class="grow"><div class="row between"><b>${esc(r.name)}</b><span class="t-sm muted num">${open ? `${n} / 20` : `Own ${S.data.regionUnlockOwned} in ${esc(S.data.regions[i - 1].name)}`}</span></div>
-        <div class="bar mt8"><i style="width:${n / 20 * 100}%;background:${r.color}"></i></div></div>${open ? ic('chevron-right', 18) : ''}</div>`; }).join('')}</div>`;
+        <div class="grow"><div class="row between"><b>${esc(r.name)}</b><span class="t-sm muted num">${open ? `${n} / ${S.data.perRegion}` : `Own ${S.data.regionUnlockOwned} in ${esc(S.data.regions[i - 1].name)}`}</span></div>
+        <div class="bar mt8"><i style="width:${n / S.data.perRegion * 100}%;background:${r.color}"></i></div></div>${open ? ic('chevron-right', 18) : ''}</div>`; }).join('')}</div>`;
   const map = $('#map', root);
   map.addEventListener('pointerdown', onTap);
 }

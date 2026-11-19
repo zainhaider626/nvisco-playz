@@ -69,19 +69,19 @@ async function relink(c, ids) {
 expandRouter.post('/expand/partner', asyncH(async (req, res) => {
   const code = String(req.body?.country || '').toUpperCase();
   const target = parseInt(req.body?.company_id);
-  if (!G.COUNTRY_BY_CODE[code]) throw bad('Choose a country');
+  if (req.body?.scope !== 'ranked' && !G.COUNTRY_BY_CODE[code]) throw bad('Choose a country');
   if (!Number.isFinite(target) || target === req.uid) throw bad('Choose another company');
   const out = await tx(async c => {
-    const br = await c.query(`SELECT level FROM user_branches WHERE user_id=$1 AND country=$2`, [req.uid, code]);
-    if (!br.rows[0]) throw bad('Open a branch in that country first');
+    const ranked = req.body?.scope === 'ranked';
+    if (!ranked) { const br = await c.query(`SELECT level FROM user_branches WHERE user_id=$1 AND country=$2`, [req.uid, code]); if (!br.rows[0]) throw bad('Open a branch in that country first'); }
     const t = (await c.query(`SELECT id, country, is_bot, status, company_name FROM users WHERE id=$1`, [target])).rows[0];
     if (!t || t.status !== 'active') throw bad('That company is not available');
-    if (t.country.trim() !== code) throw bad('That company is based in a different country');
+    if (!ranked && t.country.trim() !== code) throw bad('That company is based in a different country');
     const active = (await c.query(`SELECT COUNT(*)::int n FROM partnerships WHERE status='active' AND (requester=$1 OR partner=$1)`, [req.uid])).rows[0].n;
     if (active >= G.PARTNER_MAX) throw bad(`You can have at most ${G.PARTNER_MAX} partners`);
     try {
       const status = t.is_bot ? 'active' : 'pending';
-      const ins = await c.query(`INSERT INTO partnerships (requester, partner, country, status, decided_at) VALUES ($1,$2,$3,$4, CASE WHEN $4='active' THEN now() END) RETURNING id`, [req.uid, target, code, status]);
+      const ins = await c.query(`INSERT INTO partnerships (requester, partner, country, status, decided_at) VALUES ($1,$2,$3,$4, CASE WHEN $4='active' THEN now() END) RETURNING id`, [req.uid, target, ranked ? t.country.trim() : code, status]);
       if (status === 'active') await relink(c, [req.uid]);
       else await c.query(`INSERT INTO notifications (user_id, kind, body) VALUES ($1,'partner',$2)`, [target, `A company wants to partner with you. Open Expand to answer.`]);
       return { id: ins.rows[0].id, status };
@@ -120,4 +120,44 @@ expandRouter.post('/expand/partner/:id/end', asyncH(async (req, res) => {
     if (p.status === 'active') await relink(c, [p.requester, p.partner]);
   });
   res.json({ ok: true });
+}));
+
+// ---- investor / partner offers made by the app in every country: each one adds its own income stream
+expandRouter.get('/expand/offers', asyncH(async (req, res) => {
+  const code = String(req.query.country || '').toUpperCase();
+  if (!G.COUNTRY_BY_CODE[code]) throw bad('Choose a country');
+  const [br, mine] = await Promise.all([
+    q(`SELECT level FROM user_branches WHERE user_id=$1 AND country=$2`, [req.uid, code]),
+    q(`SELECT offer_id FROM user_offers WHERE user_id=$1`, [req.uid]),
+  ]);
+  const level = br.rows[0]?.level || 0, taken = new Set(mine.rows.map(r => r.offer_id));
+  res.json({ level, active: mine.rows.length, max: G.OFFER_MAX, rows: G.offersFor(code).map(o => ({ ...o, status: taken.has(o.id) ? 'active' : level >= o.minBranch ? 'open' : 'locked' })) });
+}));
+
+expandRouter.post('/expand/offer', act(async (c, u, req) => {
+  const o = G.offerById(String(req.body?.offer_id || '')); if (!o) throw bad('Unknown offer');
+  const { branches, offers } = await loadOwned(c, u.id);
+  if ((branches.get(o.country) || 0) < o.minBranch) throw bad(`Upgrade your ${o.country} branch to level ${o.minBranch} to unlock this offer`);
+  if (offers.some(x => x.id === o.id)) throw bad('You already accepted this offer');
+  if (offers.length >= G.OFFER_MAX) throw bad(`You can hold at most ${G.OFFER_MAX} offers at once`);
+  await c.query(`INSERT INTO user_offers (user_id, offer_id) VALUES ($1,$2)`, [u.id, o.id]);
+  await rederive(c, u);
+  return { offer: o.id };
+}));
+
+expandRouter.post('/expand/offer/end', act(async (c, u, req) => {
+  const r = await c.query(`DELETE FROM user_offers WHERE user_id=$1 AND offer_id=$2`, [u.id, String(req.body?.offer_id || '')]);
+  if (!r.rowCount) throw bad('Nothing to end');
+  await rederive(c, u);
+}));
+
+// ---- ranked players anywhere (worldwide or in your country) you can team up with
+expandRouter.get('/expand/ranked', asyncH(async (req, res) => {
+  const me = (await q(`SELECT country FROM users WHERE id=$1`, [req.uid])).rows[0];
+  const own = req.query.scope === 'country';
+  const r = await q(
+    `SELECT ${profileOf}, (SELECT status FROM partnerships p WHERE p.status IN ('pending','active') AND ((p.requester=$1 AND p.partner=u.id) OR (p.partner=$1 AND p.requester=u.id)) LIMIT 1) AS link,
+            (SELECT COUNT(*)::int + 1 FROM users x WHERE x.status <> 'banned' AND x.lifetime_earned > u.lifetime_earned) AS rank
+     FROM users u WHERE u.id <> $1 AND u.status='active' ${own ? 'AND u.country = $2' : ''} ORDER BY u.lifetime_earned DESC, u.id LIMIT 25`, own ? [req.uid, me.country.trim()] : [req.uid]);
+  res.json({ rows: r.rows.map(x => ({ ...x, country: x.country.trim(), demo: false })) });
 }));

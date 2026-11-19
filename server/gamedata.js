@@ -16,7 +16,7 @@ export const CATEGORIES = {
   R: { id: 'realestate', name: 'Real Estate' },
 };
 
-// Each region: 20 assets in ascending cost order -> 5 business, 5 industries, 10 real estate.
+// Each region lists 20 names; KEEP picks the 10 that are used (a mix of business, industry and property in ascending cost order).
 const ASSET_NAMES = {
   africa: [
     'B Roadside Kiosk', 'R Tin-Roof Shack', 'R Village Plot', 'B Mobile Money Agent', 'R Mud-Brick Home',
@@ -56,18 +56,20 @@ const ASSET_NAMES = {
   ],
 };
 
-export const ASSETS_PER_REGION = 20;
+export const ASSETS_PER_REGION = 10;
+const KEEP = [1, 3, 4, 6, 8, 9, 12, 13, 16, 20];   // which of the 20 listed names stay (ids keep their old number so photos still match)
 export const ASSET_MAX_LEVEL = 5;
-export const REGION_UNLOCK_OWNED = 10;       // own this many assets in the previous region to open the next one
-export const REGION_SET_BONUS = 0.25;        // +25% income from a region once all 20 assets are owned
+export const REGION_UNLOCK_OWNED = 6;        // own this many assets in the previous region to open the next one
+export const REGION_SET_BONUS = 0.25;        // +25% income from a region once all 10 assets are owned
 
 export const ASSETS = [];
 REGIONS.forEach((r, ri) => {
-  ASSET_NAMES[r.id].forEach((s, k) => {
+  KEEP.forEach((orig, k) => {
+    const s = ASSET_NAMES[r.id][orig - 1];
     const cat = s[0];
     const name = s.slice(2);
     const index = ri * ASSETS_PER_REGION + k;
-    ASSETS.push({ id: `${r.id}-${k + 1}`, region: r.id, regionIndex: ri, k, index, cat: CATEGORIES[cat].id, name });
+    ASSETS.push({ id: `${r.id}-${orig}`, region: r.id, regionIndex: ri, k, index, cat: CATEGORIES[cat].id, name });
   });
 });
 export const ASSET_BY_ID = Object.fromEntries(ASSETS.map(a => [a.id, a]));
@@ -148,12 +150,12 @@ export const LEAGUE_DEMOTE = 5;
 export const TIERS = [
   { id: 0, name: 'Peasant', card: 'Starter Card', min: 0 },
   { id: 1, name: 'Merchant', card: 'Stratos Rewards', min: 1e6 },
-  { id: 2, name: 'Trader', card: 'Citadel Prestige', min: 1e10 },
-  { id: 3, name: 'Magnate', card: 'Cutts Silk', min: 1e16 },
-  { id: 4, name: 'Baron', card: 'Dubai Royale First', min: 1e22 },
-  { id: 5, name: 'Lord', card: 'Merrick Octave Black', min: 1e28 },
-  { id: 6, name: 'Sovereign', card: 'JP Morgen Reserve', min: 1e34 },
-  { id: 7, name: 'Tycoon', card: 'Centaur Black', min: 1e40 },
+  { id: 2, name: 'Trader', card: 'Citadel Prestige', min: 1e9 },
+  { id: 3, name: 'Magnate', card: 'Cutts Silk', min: 1e12 },
+  { id: 4, name: 'Baron', card: 'Dubai Royale First', min: 1e15 },
+  { id: 5, name: 'Lord', card: 'Merrick Octave Black', min: 1e18 },
+  { id: 6, name: 'Sovereign', card: 'JP Morgen Reserve', min: 1e21 },
+  { id: 7, name: 'Tycoon', card: 'Centaur Black', min: 1e24 },
 ];
 
 export const INDUSTRIES = [
@@ -181,3 +183,14 @@ export const PARTNER_MAX = 5;
 export const COUNTRY_BY_CODE = {};
 for (const [region, list] of Object.entries(REGION_COUNTRIES)) list.forEach(([code, f], i) => { if (!COUNTRY_BY_CODE[code]) COUNTRY_BY_CODE[code] = { code, region, f, order: i }; });
 
+
+// ---- investor / partner offers made by the app itself (every country has three; they unlock with branch level) ----
+export const OFFER_MAX = 6;                    // active offers at once
+export const OFFER_TIERS = [{ tier: 1, minBranch: 1, pct: 0.03 }, { tier: 2, minBranch: 3, pct: 0.06 }, { tier: 3, minBranch: 5, pct: 0.10 }];
+const OFFER_KINDS = [['Growth Capital', 'Investor'], ['Harbor Holdings', 'Investor'], ['Next Wave Ventures', 'Investor'], ['Pioneer Partners', 'Partner'], ['Summit Trade Alliance', 'Partner'],
+  ['Heritage Trading Group', 'Partner'], ['Delta Investors', 'Investor'], ['Crescent Collective', 'Partner'], ['Meridian Fund', 'Investor']];
+export function offersFor(code) {
+  const base = [...code].reduce((a, ch) => a + ch.charCodeAt(0), 0);
+  return OFFER_TIERS.map(t => { const [name, kind] = OFFER_KINDS[(base + t.tier * 3) % OFFER_KINDS.length]; return { id: `${code}-${t.tier}`, country: code, tier: t.tier, name, kind, minBranch: t.minBranch, pct: t.pct }; });
+}
+export const offerById = (id) => { const code = String(id).split('-')[0]; if (!COUNTRY_BY_CODE[code]) return null; return offersFor(code).find(o => o.id === id) || null; };

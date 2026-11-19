@@ -16,23 +16,23 @@ export const TAP_HUSTLE = 0.3;                 // each tap also pays 30% of one 
 // ---- late-game pricing: everything gets steeper once a price passes one million ----
 export const LATE_FROM = 1e6, LATE_POWER = 1.04;
 export const late = (c) => (c <= LATE_FROM ? c : LATE_FROM * Math.pow(c / LATE_FROM, LATE_POWER));
-export const UPGRADE_INCOME_FACTOR = 0.9;      // each upgrade level adds +90% of the level-1 income (5 levels in total)
+export const UPGRADE_INCOME_RATIO = 2.6;       // every level multiplies the income by 2.6 (x1, x2.6, x6.8, x17.6, x45.7) while its price grows by only 2.2
 export const UPGRADE_COST_RATIO = 2.2;
 
-// ---- assets: one global exponential ladder, payback time slowly rising from 30 min to ~7.5 h ----
+// ---- assets: one global exponential ladder, payback time slowly rising from 18 min to ~2.7 h ----
 const assetRawCost = (a) => 250 * Math.pow(2.15, a.index);                    // before the late-game steepening
 export const assetBaseCost = (a) => late(assetRawCost(a));
-const rawPayback = (a) => 0.5 + 0.06 * a.index;                               // hours at the raw price
+const rawPayback = (a) => 0.3 + 0.04 * a.index;                               // hours at the raw price
 export const assetBaseIncome = (a) => assetRawCost(a) / rawPayback(a);        // per hour at level 1
 export const assetPayback = (a) => assetBaseCost(a) / assetBaseIncome(a);     // hours; late assets pay back slower
-export const assetIncomeAt = (a, level) => assetBaseIncome(a) * (1 + UPGRADE_INCOME_FACTOR * (level - 1));
+export const assetIncomeAt = (a, level) => assetBaseIncome(a) * Math.pow(UPGRADE_INCOME_RATIO, level - 1);
 export const assetUpgradeCost = (a, level) => late(assetRawCost(a) * Math.pow(UPGRADE_COST_RATIO, level)); // level -> level+1
 
 // ---- country branches: priced from the region's late-game assets, scaled by the country's market size ----
 export const branchCost = (code, level) => {
   const c = COUNTRY_BY_CODE[code]; if (!c) return Infinity;
   const ri = REGIONS.findIndex(r => r.id === c.region);
-  return Math.round(late(250 * Math.pow(2.15, ri * ASSETS_PER_REGION + 9) * c.f * Math.pow(3.2, level - 1)));
+  return Math.round(late(250 * Math.pow(2.15, ri * ASSETS_PER_REGION + 3) * c.f * Math.pow(2.5, level - 1)));
 };
 
 // ---- tapping ----
@@ -49,8 +49,9 @@ export const tierFor = (score) => { let t = TIERS[0]; for (const x of TIERS) if 
  * Derive every cached number from what the player owns.
  * owned: Map assetId -> level ; items: Set itemId ; stars: int ; tapLevel: int
  */
-export function derive({ owned, items, stars, tapLevel, branches = new Map(), partners = 0 }) {
+export function derive({ owned, items, stars, tapLevel, branches = new Map(), partners = 0, offerPct = 0 }) {
   let baseIncome = 0, assetsValue = 0;
+  const rawIncome = {};
   const regionCounts = {};
   for (const [id, level] of owned) {
     const a = ASSET_BY_ID[id]; if (!a) continue;
@@ -59,11 +60,13 @@ export function derive({ owned, items, stars, tapLevel, branches = new Map(), pa
   for (const [id, level] of owned) {
     const a = ASSET_BY_ID[id]; if (!a) continue;
     const complete = regionCounts[a.region] === ASSETS_PER_REGION;
-    baseIncome += assetIncomeAt(a, level) * (complete ? 1 + REGION_SET_BONUS : 1);
+    const inc = assetIncomeAt(a, level) * (complete ? 1 + REGION_SET_BONUS : 1);
+    baseIncome += inc; rawIncome[id] = inc;
     let spent = assetBaseCost(a);
     for (let l = 1; l < level; l++) spent += assetUpgradeCost(a, l);
     assetsValue += spent;
   }
+  const bizValue = assetsValue;
   let incomeBonus = 0, tapBonus = 0, itemsValue = 0;
   const catCounts = {};
   for (const id of items) {
@@ -87,11 +90,12 @@ export function derive({ owned, items, stars, tapLevel, branches = new Map(), pa
   }
   for (const [region, list] of Object.entries(REGION_COUNTRIES)) if ((branchRegion[region] || 0) >= list.length) branchBonus += BRANCH_REGION_SET_BONUS;
   const partnerBonus = Math.min(partners, PARTNER_MAX) * PARTNER_INCOME_BONUS;
-  incomeBonus += branchBonus + partnerBonus;
+  incomeBonus += branchBonus + partnerBonus + offerPct;
   assetsValue += branchValue;
   const mult = prestigeMult(stars);
   const incomePerHour = baseIncome * mult * (1 + incomeBonus);
-  return { incomePerHour, tapBonus, incomeBonus, assetsValue, itemsValue, regionCounts, catCounts, mult, branchBonus, partnerBonus };
+  const perAsset = {}; for (const [id, v] of Object.entries(rawIncome)) perAsset[id] = v * mult * (1 + incomeBonus);
+  return { perAsset, bizValue, baseIncomePerHour: baseIncome * mult, incomePerHour, tapBonus, incomeBonus, assetsValue, itemsValue, regionCounts, catCounts, mult, branchBonus, partnerBonus };
 }
 
 export function tapValue({ tapLevel, tapBonus, stars, incomePerHour, boosted }) {

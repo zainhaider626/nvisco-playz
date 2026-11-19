@@ -224,6 +224,41 @@ const cashA = Number((await q(`SELECT cash::float8 c FROM users WHERE id=$1`, [i
 const back = await A.get('/api/state?init=1');
 ok(back.away_earned > 0 && back.cash >= cashA + back.away_earned * 0.999, 'coins earned while away are already inside the balance');
 
+console.log('\nLive revenue, offers, sell business, stop loss, sample companies');
+{
+  const F = await mk(`Feature Works ${tag}`, `f${tag}@test.dev`);
+  const fid = (await F.get('/api/state')).me.id;
+  await setUser(`f${tag}@test.dev`, { cash: 1e12, lifetime_earned: 1e6 });
+  for (const id of ['africa-1', 'africa-3', 'africa-4', 'africa-6']) await F.post('/api/assets/buy', { asset_id: id });
+  let st = await F.get('/api/state');
+  const sum = Object.values(st.rev).reduce((t, r) => t + r.ph, 0);
+  ok(Object.keys(st.rev).length === 4 && Math.abs(sum - st.income_per_hour) < 1e-6 * st.income_per_hour, 'each business reports its own income and they add up to the total');
+  await F.post('/api/expand/branch', { country: 'NG' });
+  let r = await F.post('/api/expand/offer', { offer_id: 'NG-1' });
+  ok(r.status === 200 && r.state.offers.length === 1 && r.state.income_per_hour > st.income_per_hour, 'investor offer adds its own income stream');
+  ok((await F.post('/api/expand/offer', { offer_id: 'NG-3' })).status === 400, 'offer above branch level is refused');
+  ok((await F.get('/api/expand/offers?country=NG')).rows.length === 3, 'three offers per country');
+  ok((await F.get('/api/expand/ranked?scope=world')).rows.length > 0, 'ranked players list loads');
+  r = await F.post('/api/business/sell');
+  ok(r.status === 200 && r.state.rank_boosts === 1 && Object.keys(r.state.owned).length === 0, 'selling the business gives a rank boost');
+  ok((await F.post('/api/business/sell')).status === 400, 'cannot sell again straight away');
+  await setUser(`f${tag}@test.dev`, { lifetime_earned: 5 });
+  r = await F.post('/api/rank/boost');
+  ok(r.status === 200 && r.from > r.to && r.state.rank_boosts === 0, 'rank boost moves you up');
+  await setUser(`f${tag}@test.dev`, { lifetime_earned: 9e30 });
+  await q(`UPDATE users SET rank_boosts=1 WHERE id=$1`, [fid]);
+  r = await F.post('/api/rank/boost');
+  ok(r.status === 400 && (await F.get('/api/state')).rank_boosts === 1, 'boost is kept when you are already #1');
+  const mk0 = await F.get('/api/market'); const s0 = mk0.stocks[0];
+  await setUser(`f${tag}@test.dev`, { cash: 1e6 });
+  await F.post('/api/trade', { stock_id: s0.id, side: 'buy', shares: 5 });
+  ok((await F.post('/api/trade/orders', { stock_id: s0.id, stop_loss: s0.price * 2 })).status === 400, 'stop loss above price refused');
+  r = await F.post('/api/trade/orders', { stock_id: s0.id, stop_loss: s0.price * 0.5, take_profit: s0.price * 2 });
+  ok(r.status === 200 && r.state.holdings[s0.id].stop_loss > 0, 'stop loss and take profit saved');
+  const smp = (await q(`SELECT COUNT(*)::int n FROM users WHERE is_sample AND country = ANY($1)`, [['GB', 'IT', 'NG', 'TR', 'PK']])).rows[0].n;
+  ok(smp === 5, 'five sample companies exist');
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 await pool.end();
 process.exit(fail ? 1 : 0);

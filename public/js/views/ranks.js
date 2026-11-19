@@ -16,7 +16,7 @@ function rowHtml(r, kind, i, d) {
   const prize = kind === 'league' && r.prize > 0 ? `<span class="chip gold" style="height:20px">${ic('trophy', 11, '', 2.4)}+${money(r.prize)}</span>` : '';
   const m = r.rank <= 3 ? ` m${r.rank}` : '';
   return `<div class="${cls}" data-act="company" data-id="${r.id}" style="min-height:62px"><div class="rk${m}">${r.rank}</div>${avatar(r.company_name, r.logo_url, 38)}
-    <div class="grow"><div class="row g8" style="gap:6px"><b class="ell">${esc(r.company_name)}</b>${r.demo ? '<span class="demo">DEMO</span>' : ''}${r.featured ? '<span class="feat">AD</span>' : ''}</div>
+    <div class="grow"><div class="row g8" style="gap:6px"><b class="ell">${esc(r.company_name)}</b>${r.featured ? '<span class="feat">AD</span>' : ''}</div>
     <div class="t-xs muted row" style="gap:6px;margin-top:2px">${flag(r.country)}<span>${kind === 'league' ? '' : esc(r.tier)}</span>${prize}</div></div>
     <div class="num b ${r.me ? '' : ''}" style="white-space:nowrap">${money(r.score)}</div></div>`;
 }

@@ -15,7 +15,7 @@ import { auctionRouter } from './auction.js';
 import { walletRouter } from './wallet.js';
 import { loadMarket } from './market.js';
 import { currentSeason } from './leagues.js';
-import { startTicker, tick, seedDemoBots, tickInfo } from './tick.js';
+import { startTicker, tick, seedDemoBots, seedSampleCompanies, tickInfo } from './tick.js';
 import { addClient, connectedCount } from './sse.js';
 import { HttpError } from './util.js';
 
@@ -69,7 +69,8 @@ await migrate();
 await loadMarket();
 await currentSeason();
 if (config.seedDemoBots) await seedDemoBots(config.seedDemoBots);
-else { const gone = (await q(`DELETE FROM users WHERE is_bot RETURNING id`)).rowCount; if (gone) console.log(`[seed] removed ${gone} demo companies (SEED_DEMO_BOTS=0)`); }
+else { const gone = (await q(`DELETE FROM users WHERE is_bot AND NOT is_sample RETURNING id`)).rowCount; if (gone) console.log(`[seed] removed ${gone} demo companies (SEED_DEMO_BOTS=0)`); }
+await seedSampleCompanies();
 const server = app.listen(config.port, () => console.log(`${config.appName} listening on http://localhost:${config.port}`));
 startTicker();
 const stop = () => { server.close(); pool.end().finally(() => process.exit(0)); };

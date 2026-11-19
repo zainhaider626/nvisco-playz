@@ -13,7 +13,7 @@ export async function openCompany(id) {
   const web = /^https?:\/\//i.test(c.website) ? c.website : '';
   const s = sheet(`
     <div class="row" style="gap:14px">${avatar(c.company_name, c.logo_url, 60)}
-      <div class="grow"><div class="row g8" style="gap:6px"><b class="t-xl ell" style="letter-spacing:-.02em">${esc(c.company_name)}</b>${c.demo ? '<span class="demo">DEMO</span>' : ''}${c.featured ? '<span class="feat">FEATURED</span>' : ''}</div>
+      <div class="grow"><div class="row g8" style="gap:6px"><b class="t-xl ell" style="letter-spacing:-.02em">${esc(c.company_name)}</b>${c.demo ? '<span class="demo">SAMPLE</span>' : ''}${c.featured ? '<span class="feat">FEATURED</span>' : ''}</div>
       <div class="muted t-sm">${esc(c.tagline || c.industry)}</div></div><button class="iconbtn" data-close aria-label="Close">${ic('x', 18)}</button></div>
     <div class="row wrap mt16" style="gap:6px"><span class="chip">${flag(c.country)}${esc(c.city ? c.city + ', ' : '')}${esc(countryName(c.country))}</span>
       <span class="chip">${esc(c.industry)}</span>${c.open_for_work ? `<span class="chip pos">${ic('briefcase', 12)}Open for work</span>` : ''}</div>
